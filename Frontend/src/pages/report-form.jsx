@@ -10,7 +10,8 @@ export default function ReportForm() {
         details: '',
         media: []
     })
-    
+    // Ref for the file input to clear it visually after submission
+    const fileInputRef = useRef(null);
 
     // handle form changes in text fields
     const handleTextChange = (e) => {
