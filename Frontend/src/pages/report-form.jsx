@@ -10,18 +10,28 @@ export default function ReportForm() {
     })
 
     // handle form changes in text fields
-    const handleTextChange=(e)=>{
+    const handleTextChange = (e) => {
         const { name, value } = e.target;
-        if (name === 'incident') { setIncident(value); }
-        else if (name === 'details') { setDetails(value); }
-    };
-
+        setFormData(prev => ({
+            ...prev,
+            [name]: value
+        }));
+    }
     // handle media changes for the input area
     // subject to change during discussion on how to handle media uploads
     const handleMediaChange = (e) => {
-        const { name, value } = e.target;
-        if (name === 'media') { setMedia(value); }
-    };
+        const files = Array.from(e.target.files);
+
+        // Validate files
+        const validFiles = files.filter(file =>
+            file.type.startsWith('image/') || file.type.startsWith('video/')
+        );
+        
+        setFormData(prev => ({
+            ...prev,
+            media: [...prev.media, ...validFiles]
+        }));
+    }
 
     // create function to handle form data
     const handleSubmit= async(e) => {
