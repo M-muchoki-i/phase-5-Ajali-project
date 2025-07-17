@@ -5,7 +5,7 @@ export function User() {
   const [lastName, setlastName] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  const [PhoneNumber, setPhoneNumber] = useState("");
+  const [phoneNumber, setPhoneNumber] = useState("");
   const [message, setMessage] = useState(null);
 
   const handleSignup = async (e) => {
@@ -36,7 +36,7 @@ export function User() {
         setfirstName("");
         setEmail("");
         setPassword("");
-        setContactInfo("");
+        setPhoneNumber("");
       } else {
         setMessage({ type: "error", text: data.error || "Signup failed" });
       }
@@ -144,8 +144,8 @@ export function User() {
             <input
               type="text"
               placeholder="Phone Number"
-              value={contactInfo}
-              onChange={(e) => setContactInfo(e.target.value)}
+              value={phoneNumber}
+              onChange={(e) => setPhoneNumber(e.target.value)}
               required
               className="w-full px-4 py-3 border border-gray-300 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-green-500"
             />
