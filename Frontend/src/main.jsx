@@ -9,17 +9,33 @@ import App from './App.jsx'
 import LocationPage from './components/locationMap.jsx';
 import EmergencyContact from './pages/emergencycontacts.jsx';
 import { User } from './pages/User.jsx';
-import { LoginForm } from './Pages/Login.jsx';
+import { LoginForm } from './pages/Login.jsx';
 import ReportForm from './pages/report-form.jsx';
 
 const router = createBrowserRouter([
   {
-    path: "/",
+    path: "/report",
     element: <ReportForm />,
   },
   {
     path: "/login",
     element: <LoginForm />
+  },
+  {
+    path: "/emergency-contact",
+    element: <EmergencyContact />
+  },
+  {
+    path: "/home",
+    element: <LocationPage />
+  },
+  {
+    path: "/user",
+    element:<User />
+  },
+  {
+    path: "/",
+    element: <h1>Welcome to Ajali</h1>
   }
 ]);
 

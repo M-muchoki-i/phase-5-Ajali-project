@@ -1,23 +1,23 @@
 import { Link, useNavigate } from "react-router-dom";
 import { useForm } from "react-hook-form";
-import { zodResolver } from "@hookform/resolvers/zod";
+//import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
 import toast from "react-hot-toast";
-import { Loader2Icon } from "lucide-react";
+//import { Loader2Icon } from "lucide-react";
 
-import { Button } from "@/components/ui/button";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Input } from "@/components/ui/input";
-import {
-  Form,
-  FormField,
-  FormItem,
-  FormLabel,
-  FormControl,
-  FormMessage,
-} from "@/components/ui/form";
+//import { Button } from "@/components/ui/button";
+//import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+//import { Input } from "@/components/ui/input";
+// import {
+//   Form,
+//   FormField,
+//   FormItem,
+//   FormLabel,
+//   FormControl,
+//   FormMessage,
+// } from "@/components/ui/form";
 
-import { BASE_URL } from "@/utils";
+//import { BASE_URL } from "@/utils";
 
 const loginSchema = z.object({
   email: z.string().email("Enter a valid email"),
