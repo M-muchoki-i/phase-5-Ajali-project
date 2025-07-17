@@ -1,60 +1,60 @@
-/* === LOCATION PAGE STYLES === */
-.location-page-wrapper {
+.location-share-wrapper {
+  padding: 2rem;
+  text-align: center;
+  background: #f8f9fa;
+  min-height: 100vh;
+  font-family: sans-serif;
+}
+
+.share-btn {
+  background-color: #dc3545;
+  color: white;
+  padding: 0.75rem 1.5rem;
+  font-size: 1rem;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  margin-top: 1rem;
+}
+
+.share-btn:disabled {
+  background-color: #aaa;
+  cursor: not-allowed;
+}
+
+.location-output {
+  margin-top: 2rem;
+}
+
+.location-output a {
+  display: block;
+  margin-bottom: 1rem;
+  color: #007bff;
+  word-break: break-word;
+}
+
+.share-options {
   display: flex;
   flex-direction: column;
-  align-items: center;
-  padding: 2rem 1rem;
-  background: url('https://d35oenyzp35321.cloudfront.net/Vaishali_Emergency_1_8452c4d7fb.jpg') center/cover no-repeat;
-  min-height: 100vh;
+  gap: 0.75rem;
+  margin-top: 1rem;
+}
+
+.share-options button {
+  background-color: #28a745;
   color: white;
-  text-align: center;
+  padding: 0.65rem 1rem;
+  font-size: 0.95rem;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
 }
 
-.location-page-header h1 {
-  margin-bottom: 0.5rem;
+.share-options button:hover {
+  background-color: #218838;
 }
 
-.location-page-header p {
-  max-width: 600px;
-  margin-bottom: 2rem;
-}
-
-.location-map-container {
-  width: 90%;
-  max-width: 500px;
-  height: 500px;
-  background: white;
-  border-radius: 12px;
-  box-shadow: 0 0 15px rgba(0, 0, 0, 0.3);
-  overflow: hidden;
-}
-
-#canvas-for-googlemap,
-.google-map-iframe {
-  width: 100%;
-  height: 100%;
-  border: 0;
-}
-
-/* Responsive */
-@media (max-width: 600px) {
-  .location-map-container {
-    height: 350px;
-  }
-  .directions-button {
-    margin-top: 1.5rem;
-    background-color: #28a745;
-    color: white;
-    padding: 0.75rem 1.5rem;
-    font-size: 1rem;
-    border: none;
-    border-radius: 8px;
-    cursor: pointer;
-    transition: background-color 0.3s ease;
-  }
-  
-  .directions-button:hover {
-    background-color: #218838;
-  }
-  
+.error-text {
+  color: red;
+  margin-top: 1rem;
 }
