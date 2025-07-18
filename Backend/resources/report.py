@@ -33,3 +33,34 @@ class ReportResource(Resource):
             
         reports = Report.query.all()
         return [r.to_dict() for r in reports]
+    
+    def patch(self, report_id):
+        report = Report.query.get(report_id)
+        if not report:
+            return {"message": "Report not found"}, 404
+        
+        data = ReportResource.parser.parse_args()
+        for key, value in data.items():
+            setattr(report, key, value)
+        
+        try:
+            db.session.commit()
+            return report.to_dict()
+        except Exception as e:
+            return {"message": str(e)}, 400
+        except SQLAlchemyError:
+            db.session.rollback()
+            return {"message": "Database error"}, 500
+
+    def delete(self, report_id):
+        report = Report.query.get(report_id)
+        if not report:
+            return {"message": "Report not found"}, 404
+        
+        try:
+            db.session.delete(report)
+            db.session.commit()
+            return {"message": "Report deleted"}
+        except SQLAlchemyError:
+            db.session.rollback()
+            return {"message": "Database error"}, 500
