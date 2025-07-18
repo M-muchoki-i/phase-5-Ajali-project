@@ -147,8 +147,6 @@ export default function ReportForm() {
 
                focus:ring-offset-2 shadow-sm transition-all" type="submit" onClick={getCurrentPosition} >Submit Report</button>
 
-               focus:ring-offset-2 shadow-sm transition-all" type="submit" >Submit Report</button>
-
                     </form>
                 </div>
             </div>
