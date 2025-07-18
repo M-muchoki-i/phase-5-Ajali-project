@@ -4,8 +4,8 @@ import axios from 'axios'
 import getCurrentPosition from "../components/locationMap"
 //import NavBar from "../components/navbar"
 
-import { useState } from "react"
-import axios from 'axios'
+// import { useState } from "react"
+// import axios from 'axios'
 
 
 const backendURL = 'http://localhost:5000'
