@@ -5,7 +5,11 @@ export function User() {
   const [lastName, setlastName] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+
+  const [phoneNumber, setphoneNumber] = useState("");
+
   const [phoneNumber, setPhoneNumber] = useState("");
+
   const [message, setMessage] = useState(null);
 
   const handleSignup = async (e) => {
