@@ -27,12 +27,12 @@ class User(db.Model, SerializerMixin):
     last_name = db.Column(db.String, nullable=False)
     email = db.Column(db.String, unique=True, nullable=False)
     password = db.Column(db.String)
-    role = db.Column(db.String, default="user")
+    # role = db.Column(db.String, default="user")
     phone_number = db.Column(db.Integer, unique=True, nullable=False)
     created_at = db.Column(db.TIMESTAMP)
 
     reports = db.relationship('Report', back_populates='user', cascade='all, delete')
-    emergency_contacts = db.relationship('Emergency_Contact', back_populates='user', cascade='all, delete')
+    # emergency_contacts = db.relationship('Emergency_Contact', back_populates='user', cascade='all, delete')
 
 
 class Report(db.Model, SerializerMixin):

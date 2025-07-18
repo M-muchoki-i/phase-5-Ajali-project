@@ -2,6 +2,7 @@ from flask import Flask
 from flask_migrate import Migrate
 from flask_restful import Api
 from models import db 
+from resources.user import UserResources
 
 app = Flask(__name__)
 
@@ -16,3 +17,5 @@ migrate = Migrate(app, db)
 
 # link our db to the flask app
 db.init_app(app)
+
+api.add_resource(UserResources, '/user', '/user/<int:id>') 
