@@ -1,7 +1,12 @@
+
 import { useState, useRef } from "react"
 import axios from 'axios'
 import getCurrentPosition from "../components/locationMap"
 //import NavBar from "../components/navbar"
+
+import { useState } from "react"
+import axios from 'axios'
+
 
 const backendURL = 'http://localhost:5000'
 
@@ -139,7 +144,11 @@ export default function ReportForm() {
                         </div>
                         <button className="w-full mt-4 py-3 px-4 bg-red-500 text-white font-medium rounded-full
                hover:bg-red-600 focus:outline-none focus:ring-2 focus:ring-red-500 
+
                focus:ring-offset-2 shadow-sm transition-all" type="submit" onClick={getCurrentPosition} >Submit Report</button>
+
+               focus:ring-offset-2 shadow-sm transition-all" type="submit" >Submit Report</button>
+
                     </form>
                 </div>
             </div>

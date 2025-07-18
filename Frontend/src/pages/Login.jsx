@@ -1,166 +1,111 @@
-import { Link, useNavigate } from "react-router-dom";
-import { useForm } from "react-hook-form";
-//import { zodResolver } from "@hookform/resolvers/zod";
-import { z } from "zod";
-import toast from "react-hot-toast";
-//import { Loader2Icon } from "lucide-react";
+import { useState } from "react";
+import { Link } from "react-router-dom";
 
-//import { Button } from "@/components/ui/button";
-//import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-//import { Input } from "@/components/ui/input";
-// import {
-//   Form,
-//   FormField,
-//   FormItem,
-//   FormLabel,
-//   FormControl,
-//   FormMessage,
-// } from "@/components/ui/form";
+export function Login() {
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const [message, setMessage] = useState(null);
 
-//import { BASE_URL } from "@/utils";
+  const handleLogin = async (e) => {
+    e.preventDefault();
+    setMessage(null);
 
-const loginSchema = z.object({
-  email: z.string().email("Enter a valid email"),
-  password: z.string().min(1, "Password is required"),
-});
-
-export function LoginForm({ className = "", ...props }) {
-  const navigate = useNavigate();
-  const form = useForm({
-    resolver: zodResolver(loginSchema),
-  });
-
-  const handleLogin = async (data) => {
     try {
-      const res = await fetch(`${BASE_URL}/login`, {
+      const res = await fetch(`${Backend}/login`, {
         method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-          Accept: "application/json",
-        },
-        body: JSON.stringify(data),
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ email, password }),
       });
 
-      const result = await res.json();
+      const data = await res.json();
 
-      if (res.ok && result.user) {
-        toast.success(result.message || "Login successful");
-
-        localStorage.setItem("session", result.access_token);
-
-        const destination =
-          result.user.role === "admin" ? "/admin" : "/reports";
-        navigate(destination);
+      if (res.ok) {
+        setMessage({ type: "success", text: "Login successful!" });
+        // Store token or redirect if needed
+        localStorage.setItem("token", data.token);
       } else {
-        const msg =
-          typeof result.message === "string"
-            ? result.message
-            : Object.values(result.message)[0];
-        toast.error(msg);
+        setMessage({ type: "error", text: data.error || "Login failed" });
       }
-    } catch (err) {
-      toast.error("Login failed. Please try again.");
+    } catch (error) {
+      setMessage({ type: "error", text: "Network error" });
     }
   };
 
   return (
-    <div className={`w-full max-w-md mx-auto ${className}`} {...props}>
-      <Card>
-        <CardHeader className="text-center">
-          <CardTitle className="text-xl text-red-600 font-semibold">
-            Ajali! Login
-          </CardTitle>
-        </CardHeader>
-        <CardContent>
-          <Form {...form}>
-            <form
-              onSubmit={form.handleSubmit(handleLogin)}
-              className="space-y-6"
-            >
-              <FormField
-                control={form.control}
-                name="email"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>Email</FormLabel>
-                    <FormControl>
-                      <Input
-                        type="email"
-                        placeholder="your@email.com"
-                        {...field}
-                      />
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
-
-              <FormField
-                control={form.control}
-                name="password"
-                render={({ field }) => (
-                  <FormItem>
-                    <div className="flex justify-between items-center">
-                      <FormLabel>Password</FormLabel>
-                      <a
-                        href="#"
-                        className="text-xs underline hover:text-blue-600"
-                      >
-                        Forgot password?
-                      </a>
-                    </div>
-                    <FormControl>
-                      <Input
-                        type="password"
-                        placeholder="********"
-                        {...field}
-                      />
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
-
-              <Button
-                type="submit"
-                disabled={form.formState.isSubmitting}
-                className="w-full"
-              >
-                {form.formState.isSubmitting ? (
-                  <>
-                    <Loader2Icon className="animate-spin mr-2" />
-                    Logging in...
-                  </>
-                ) : (
-                  "Login"
-                )}
-              </Button>
-            </form>
-          </Form>
-
-          <p className="mt-4 text-center text-sm">
-            New to Ajali?{" "}
-            <Link
-              to="/signin"
-              className="underline text-blue-600 hover:opacity-80"
-            >
-              Create an account
-            </Link>
+    <div className="min-h-screen flex items-center justify-center bg-gray-50 px-4">
+      <div className="max-w-md w-full p-10 bg-white rounded-xl shadow-xl space-y-6">
+        <div className="text-center">
+          <h2 className="text-3xl font-bold text-green-700 mb-2">
+            Welcome back!
+          </h2>
+          <p className="text-sm text-gray-500">
+            Log in to access your account.
           </p>
-        </CardContent>
-      </Card>
+        </div>
 
-      <p className="text-xs text-center text-muted-foreground mt-2">
-        By continuing, you accept our{" "}
-        <a href="#" className="underline">
-          Terms of Service
-        </a>{" "}
-        and{" "}
-        <a href="#" className="underline">
-          Privacy Policy
-        </a>
-        .
-      </p>
+        {message && (
+          <div
+            className={`p-3 rounded text-center font-medium ${
+              message.type === "error"
+                ? "bg-red-100 text-red-700"
+                : "bg-green-100 text-green-700"
+            }`}
+          >
+            {message.text}
+          </div>
+        )}
+
+        <form onSubmit={handleLogin} className="space-y-4">
+          <div>
+            <label
+              htmlFor="email"
+              className="block text-sm font-medium text-gray-700 mb-1"
+            >
+              Email <span className="text-red-500">*</span>
+            </label>
+            <input
+              type="email"
+              placeholder="Email"
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
+              required
+              className="w-full px-4 py-3 border border-gray-300 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-green-500"
+            />
+          </div>
+          <div>
+            <label
+              htmlFor="password"
+              className="block text-sm font-medium text-gray-700 mb-1"
+            >
+              Password <span className="text-red-500">*</span>
+            </label>
+            <input
+              type="password"
+              placeholder="Password"
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
+              required
+              className="w-full px-4 py-3 border border-gray-300 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-green-500"
+            />
+          </div>
+          <button
+            type="submit"
+            className="w-full py-3 bg-green-600 hover:bg-green-700 text-white font-semibold rounded-lg transition duration-200"
+          >
+            Login
+          </button>
+        </form>
+
+        <p className="text-center text-sm text-gray-500 mt-6">
+          Don't have an account?{" "}
+          <Link
+            to={"/signup"}
+            className="text-green-600 font-medium hover:underline"
+          >
+            Sign up here
+          </Link>
+        </p>
+      </div>
     </div>
   );
 }
