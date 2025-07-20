@@ -1,11 +1,12 @@
 import { useState } from "react";
+import { Link } from "react-router-dom";
 
 export function User() {
   const [firstName, setfirstName] = useState("");
   const [lastName, setlastName] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  const [phoneNumber, setPhoneNumber] = useState("");
+  const [PhoneNumber, setPhoneNumber] = useState("");
   const [message, setMessage] = useState(null);
 
   const handleSignup = async (e) => {
@@ -21,7 +22,7 @@ export function User() {
           lastName,
           email,
           password,
-          phoneNumber: phoneNumber,
+          PhoneNumber: PhoneNumber,
         }),
       });
 
@@ -144,7 +145,7 @@ export function User() {
             <input
               type="text"
               placeholder="Phone Number"
-              value={phoneNumber}
+              value={PhoneNumber}
               onChange={(e) => setPhoneNumber(e.target.value)}
               required
               className="w-full px-4 py-3 border border-gray-300 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-green-500"
@@ -161,7 +162,7 @@ export function User() {
         <p className="text-center text-sm text-gray-500 mt-6">
           if you already have an existing account?{" "}
           <Link
-            to={"/login"}
+            to={"/Login"}
             className="text-green-600 font-medium hover:underline"
           >
             Login here
