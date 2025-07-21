@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 import { useState, useRef } from "react";
 import axios from "axios";
 import getCurrentPosition from "../components/locationMap"; // Ensure this returns a function
@@ -261,3 +262,7 @@ export default function ReportForm() {
     </div>
   );
 }
+=======
+                           
+                
+>>>>>>> alice-emergency-backend
