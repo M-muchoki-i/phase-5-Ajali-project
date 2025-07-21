@@ -48,3 +48,27 @@ class Report(db.Model, SerializerMixin):
 
     user_id = db.Column(db.Integer, db.ForeignKey('users.id'), nullable=False)
     user = db.relationship('User', back_populates='reports')
+
+
+class EmergencyContact(db.Model, SerializerMixin):
+    __tablename__ = "emergency_contacts"
+
+    id = db.Column(db.Integer, primary_key=True)
+    name = db.Column(db.String, nullable=False)
+    relationship = db.Column(db.String, nullable=False)
+    phone_number = db.Column(db.String, nullable=False)
+    email = db.Column(db.String)
+    address = db.Column(db.String)
+
+    user_id = db.Column(db.Integer, db.ForeignKey('users.id'), nullable=False)
+    user = db.relationship('User', back_populates='emergency_contacts')
+
+    serialize_rules = ('-user.reports', '-user.emergency_contacts')
+
+
+
+
+
+
+
+
