@@ -39,7 +39,7 @@ class ReportResource(Resource):
         if not report:
             return {"message": "Report not found"}, 404
         
-        data = Report.parser.parse_args()
+        data = ReportResource.parser.parse_args()
         for key, value in data.items():
             setattr(report, key, value)
         
