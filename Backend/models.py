@@ -27,12 +27,12 @@ class User(db.Model, SerializerMixin):
     last_name = db.Column(db.String, nullable=False)
     email = db.Column(db.String, unique=True, nullable=False)
     password = db.Column(db.String)
-    role = db.Column(db.String, default="user")
+    # role = db.Column(db.String, default="user")
     phone_number = db.Column(db.Integer, unique=True, nullable=False)
     created_at = db.Column(db.TIMESTAMP)
 
     reports = db.relationship('Report', back_populates='user', cascade='all, delete')
-    emergency_contacts = db.relationship('Emergency_Contact', back_populates='user', cascade='all, delete')
+    # emergency_contacts = db.relationship('Emergency_Contact', back_populates='user', cascade='all, delete')
 
 
 class Report(db.Model, SerializerMixin):
@@ -48,3 +48,27 @@ class Report(db.Model, SerializerMixin):
 
     user_id = db.Column(db.Integer, db.ForeignKey('users.id'), nullable=False)
     user = db.relationship('User', back_populates='reports')
+
+
+class EmergencyContact(db.Model, SerializerMixin):
+    __tablename__ = "emergency_contacts"
+
+    id = db.Column(db.Integer, primary_key=True)
+    name = db.Column(db.String, nullable=False)
+    relationship = db.Column(db.String, nullable=False)
+    phone_number = db.Column(db.String, nullable=False)
+    email = db.Column(db.String)
+    address = db.Column(db.String)
+
+    user_id = db.Column(db.Integer, db.ForeignKey('users.id'), nullable=False)
+    user = db.relationship('User', back_populates='emergency_contacts')
+
+    serialize_rules = ('-user.reports', '-user.emergency_contacts')
+
+
+
+
+
+
+
+
