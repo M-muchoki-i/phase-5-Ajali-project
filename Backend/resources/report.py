@@ -10,6 +10,14 @@ class ReportResource(Resource):
     parser.add_argument('Longitude', required=True, type=float, help='Longitude not provided')
     parser.add_argument('Media', type=str, help='Media not attached')
 
+    def get(self, report_id=None):
+        if report_id:
+            report = Report.query.get(report_id)
+            if report:
+                return report.to_dict()
+            
+        reports = Report.query.all()
+        return [r.to_dict() for r in reports]
 
     def post(self):
         data = ReportResource.parser.parse_args()
@@ -25,21 +33,13 @@ class ReportResource(Resource):
             db.session.rollback()
             return {'message':'Database error'}, 500
 
-    def get(self, report_id=None):
-        if report_id:
-            report = Report.query.get(report_id)
-            if report:
-                return report.to_dict()
-            
-        reports = Report.query.all()
-        return [r.to_dict() for r in reports]
     
     def patch(self, report_id):
         report = Report.query.get(report_id)
         if not report:
             return {"message": "Report not found"}, 404
         
-        data = ReportResource.parser.parse_args()
+        data = Report.parser.parse_args()
         for key, value in data.items():
             setattr(report, key, value)
         
