@@ -1,24 +1,24 @@
+
 from flask_sqlalchemy import SQLAlchemy
 from sqlalchemy import MetaData
 from sqlalchemy_serializer import SerializerMixin
+from datetime import datetime
 
 
 naming_convention = {
-    "ix": "ix_%(column_0_label)s",  # indexing -> for better querying
-    "uq": "uq_%(table_name)s_%(column_0_name)s",  # unique
-    "ck": "ck_%(table_name)s_%(constraint_name)s",  # ck -> CHECK -> validations CHECK age > 18;
-    "fk": "fk_%(table_name)s_%(column_0_name)s_%(referred_table_name)s",  # foreign key
-    "pk": "pk_%(table_name)s",  # primary key
+    "ix": "ix_%(column_0_label)s",
+    "uq": "uq_%(table_name)s_%(column_0_name)s",
+    "ck": "ck_%(table_name)s_%(constraint_name)s",
+    "fk": "fk_%(table_name)s_%(column_0_name)s_%(referred_table_name)s",
+    "pk": "pk_%(table_name)s",
 }
 
-
-# this allows us to define tables and their columns
 metadata = MetaData(naming_convention=naming_convention)
-
-# create a db instance
 db = SQLAlchemy(metadata=metadata)
 
-
+# ------------------------------
+# User Model
+# ------------------------------
 class User(db.Model, SerializerMixin):
     __tablename__ = "users"
 
@@ -27,27 +27,33 @@ class User(db.Model, SerializerMixin):
     last_name = db.Column(db.String, nullable=False)
     email = db.Column(db.String, unique=True, nullable=False)
     password = db.Column(db.String)
-    # role = db.Column(db.String, default="user")
-    phone_number = db.Column(db.Integer, unique=True, nullable=False)
-    created_at = db.Column(db.TIMESTAMP)
+    phone_number = db.Column(db.String, unique=True, nullable=False)
+    created_at = db.Column(db.TIMESTAMP, default=datetime.utcnow)
 
     reports = db.relationship('Report', back_populates='user', cascade='all, delete')
-    # emergency_contacts = db.relationship('Emergency_Contact', back_populates='user', cascade='all, delete')
+    emergency_contacts = db.relationship('EmergencyContact', back_populates='user', cascade='all, delete')
+    status_reports_changed = db.relationship('StatusReport', back_populates='admin', cascade='all, delete')
+
+    serialize_rules = ('-reports.user', '-emergency_contacts.user', '-status_reports_changed.admin')
+
 
 
 class Report(db.Model, SerializerMixin):
     __tablename__ = "reports"
 
     id = db.Column(db.Integer, primary_key=True)
-    latitude = db.Column(db.Float, nullable=False)
-    longitude = db.Column(db.Float, nullable=False)
-    status = db.Column(db.String, nullable=False)
     message = db.Column(db.Text, nullable=False)
-    image = db.Column(db.String, nullable=False)
-    created_at = db.Column(db.TIMESTAMP)
+    created_at = db.Column(db.TIMESTAMP, default=datetime.utcnow)
 
     user_id = db.Column(db.Integer, db.ForeignKey('users.id'), nullable=False)
     user = db.relationship('User', back_populates='reports')
+
+    location = db.relationship('Location', back_populates='report', uselist=False, cascade='all, delete')
+    media_attachments = db.relationship('MediaAttachment', back_populates='report', cascade='all, delete')
+    status_reports = db.relationship('StatusReport', back_populates='report', cascade='all, delete')
+
+    serialize_rules = ('-user.reports', '-status_reports.report', '-media_attachments.report', '-location.report')
+
 
 
 class EmergencyContact(db.Model, SerializerMixin):
@@ -67,8 +73,47 @@ class EmergencyContact(db.Model, SerializerMixin):
 
 
 
+class MediaAttachment(db.Model, SerializerMixin):
+    __tablename__ = "media_attachments"
+
+    id = db.Column(db.Integer, primary_key=True)
+    file_url = db.Column(db.String, nullable=False)
+    media_type = db.Column(db.String, nullable=False)  
+    uploaded_at = db.Column(db.TIMESTAMP, default=datetime.utcnow)
+
+    report_id = db.Column(db.Integer, db.ForeignKey('reports.id'), nullable=False)
+    report = db.relationship('Report', back_populates='media_attachments')
 
 
 
+class StatusReport(db.Model, SerializerMixin):
+    __tablename__ = "status_reports"
+
+    id = db.Column(db.Integer, primary_key=True)
+    previous_status = db.Column(db.String, nullable=False)
+    new_status = db.Column(db.String, nullable=False)
+    changed_at = db.Column(db.TIMESTAMP, default=datetime.utcnow)
+
+    report_id = db.Column(db.Integer, db.ForeignKey('reports.id'), nullable=False)
+    changed_by = db.Column(db.Integer, db.ForeignKey('users.id'), nullable=False)
+
+    report = db.relationship('Report', back_populates='status_reports')
+    admin = db.relationship('User', back_populates='status_reports_changed')
 
 
+
+class Location(db.Model, SerializerMixin):
+    __tablename__ = "locations"
+
+    id = db.Column(db.Integer, primary_key=True)
+    latitude = db.Column(db.Float, nullable=False)
+    longitude = db.Column(db.Float, nullable=False)
+    address = db.Column(db.String)
+
+    created_at = db.Column(db.TIMESTAMP, default=datetime.utcnow)
+
+    report_id = db.Column(db.Integer, db.ForeignKey('reports.id'), nullable=False)
+    report = db.relationship('Report', back_populates='location')
+
+
+   
