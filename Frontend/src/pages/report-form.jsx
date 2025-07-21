@@ -3,8 +3,6 @@ import { useState, useRef } from "react"
 import axios from 'axios'
 import getCurrentPosition from "../components/locationMap"
 //import NavBar from "../components/navbar"
-
-import { useState } from "react"
 import axios from 'axios'
 
 
@@ -19,6 +17,20 @@ export default function ReportForm() {
     })
     // Ref for the file input to clear it visually after submission
     const fileInputRef = useRef(null);
+
+    // add state to handle location inputs
+    const [locationData, setLocationData] = useState({
+        latitude: '',
+        longitude: ''
+    })
+    // add setters for location inputs
+    const handleLocationChange = (e) => {
+        const { name, value } = e.target;
+        setLocationData(prev => ({
+            ...prev,
+            [name]:value
+        }))
+    }
 
     // handle form changes in text fields
     const handleTextChange = (e) => {
@@ -55,6 +67,8 @@ export default function ReportForm() {
         formData.media.forEach((file, index) => {
             dataToSend.append(`media[${index}]`, file);
         });
+        dataToSend.append('latitude', locationData.latitude)
+        dataToSend.append('longitude', locationData.longitude)
 
         try {
             const response = await axios.post(`${backendURL}/user/reports`, dataToSend)
@@ -104,13 +118,13 @@ export default function ReportForm() {
                                 <input
                                     type="text"
                                     className="flex-1 min-w-0 p-4 text-center focus:outline-none border-none bg-transparent"
-                                    placeholder="Longitude"
+                                    placeholder="Longitude" value={locationData.longitude} onChange={handleLocationChange}
                                 />
                                 <div className="border-l border-gray-300 h-8 self-center"></div> {/* Divider */}
                                 <input
                                     type="text"
                                     className="flex-1 min-w-0 p-4 text-center focus:outline-none border-none bg-transparent"
-                                    placeholder="Latitude"
+                                    placeholder="Latitude" value={locationData.latitude} onChange={handleLocationChange}
                                 />
                             </div>
                             <div className="w-4"></div>
@@ -131,7 +145,7 @@ export default function ReportForm() {
                             {/* Display selected file names (optional) */}
                             {formData.media.length > 0 && (
                                 <div>
-                                    <h3 className="text-xl font-bold text-red-700 mb-1">Selected Files:</h3>
+                                    <h3 className="text-xl font-bold text-red-700 mb-1">Selected Media:</h3>
                                     <div className="grid grid-cols-2 sm:grid-cols-2 gap-4 p-4 bg-gray-50 rounded-lg shadow-md">
                                         <ul>
                                             {formData.media.map((file, index) => (
