@@ -201,7 +201,6 @@ export default function ReportForm() {
         const dataToSend = new FormData();
         dataToSend.append('incident', formData.incident);
         dataToSend.append('details', formData.details);
-        // Append each selected media file
         formData.media.forEach((file, index) => {
             dataToSend.append(`media[${index}]`, file);
         });
@@ -321,7 +320,3 @@ export default function ReportForm() {
     </div>
   );
 }
-
-                           
-                
-

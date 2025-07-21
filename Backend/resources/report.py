@@ -1,4 +1,4 @@
-from flask-restful import Resource, reqparse
+from flask_restful import Resource, reqparse
 from models import db, Report
 from sqlalchemy.exc import SQLAlchemyError
 
