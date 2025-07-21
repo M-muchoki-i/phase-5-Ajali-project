@@ -81,7 +81,7 @@ export function User() {
               type="text"
               placeholder=" firstName"
               value={firstName}
-              onChange={(e) => setName(e.target.value)}
+              onChange={(e) => setfirstName(e.target.value)}
               required
               className="w-full px-4 py-3 border border-gray-300 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-green-500"
             />
@@ -97,7 +97,7 @@ export function User() {
               type="text"
               placeholder=" lastName"
               value={lastName}
-              onChange={(e) => setName(e.target.value)}
+              onChange={(e) => setlastName(e.target.value)}
               required
               className="w-full px-4 py-3 border border-gray-300 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-green-500"
             />
