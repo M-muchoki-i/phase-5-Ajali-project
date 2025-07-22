@@ -64,3 +64,5 @@ class ReportResource(Resource):
         except SQLAlchemyError:
             db.session.rollback()
             return {"message": "Database error"}, 500
+
+
