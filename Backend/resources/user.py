@@ -24,7 +24,7 @@ class UserResources(Resource):
     
     def post(self):
         data = self.parser.parse_args()
-        # step.1 check for uniquness in both email and phone_number
+        # step.1 check for uniqueness in both email and phone_number
         email =User.query.filter_by(email=data["email"]).first()
         if email:
             return{"message":"Email Address already taken"}
@@ -72,8 +72,55 @@ class UserResources(Resource):
         return{"message":"User sucessfully deleted"},202
 
         
+class LoginResource(Resource):
+    parser = reqparse.RequestParser()
+    parser.add_argument("email", type=str, required=True, help="Email is required")
+    parser.add_argument(
+        "password", type=str, required=True, help="Password is required"
+    )
 
+    def get(self, id=None):
+        # Fetch all users or a single user by ID
+        if id is None:
+            users = User.query.all()
+            return [user.to_dict() for user in users], 200
+        user = User.query.filter_by(id=id).first()
+        if not user:
+            return {"message": "User not found"}, 404
+        return user.to_dict(), 200
 
-     
+    def post(self):
+        # Handle user login
+        data = self.parser.parse_args()
+        user = User.query.filter_by(email=data["email"]).first()
 
-        
+        if not user or user.password != data["password"]:
+            # For hashed passwords:
+            # if not user or not check_password_hash(user.password, data["password"]):
+            return {"message": "Invalid email or password"}, 401
+
+        return {"message": "Login successful", "user": user.to_dict()}, 200
+
+    def patch(self, id):
+        # Update user login-related info
+        user = User.query.filter_by(id=id).first()
+        if not user:
+            return {"message": "User not found"}, 404
+
+        data = self.parser.parse_args()
+        if data["email"]:
+            user.email = data["email"]
+        if data["password"]:
+            user.password = data["password"]
+
+        db.session.commit()
+        return {"message": "Login info updated", "user": user.to_dict()}, 200
+
+    def delete(self, id):
+        # Delete a user account by ID
+        user = User.query.filter_by(id=id).first()
+        if not user:
+            return {"message": "User not found"}, 404
+        db.session.delete(user)
+        db.session.commit()
+        return {"message": "User login info deleted"}, 202

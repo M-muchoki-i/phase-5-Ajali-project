@@ -84,3 +84,5 @@ class MediaResource(Resource):
             except SQLAlchemyError:
                 db.session.rollback()
                 return {'message':'Database error: Media not deleted'}, 500
+
+
