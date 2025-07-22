@@ -11,12 +11,10 @@ class ReportResource(Resource):
     parser.add_argument('Media', type=str, help='Media not attached')
 
 
+    
+    
+   
     @jwt_required()
-    def get(self, report_id=None):
-
-        if report_id:
-            report = Report.query.get(report_id)
-
     def get(self, id=None):
         if id:
             report = Report.query.get(id=id)
