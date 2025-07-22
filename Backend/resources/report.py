@@ -69,7 +69,18 @@ class MediaResource(Resource):
         report = Report.query.get(id=id)
         if report:
             media = report.media
-            return [m.to_dict() for m in media]
+            return [m.to_dict() for m in media], 200
         else:
             return {'message':'Media not found'}, 403
         
+    def delete(self, id = None):
+        report = Report.query.get(id=id)
+        if report:
+            media = [m.to_dict() for m in report.media]
+            try:
+                db.session.delete(media)
+                db.session.commit()
+                return {'message':'Media deleted successfully'}
+            except SQLAlchemyError:
+                db.session.rollback()
+                return {'message':'Database error: Media not deleted'}, 500
