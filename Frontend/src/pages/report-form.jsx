@@ -1,5 +1,4 @@
 import { useState, useRef } from "react";
-
 import axios from "axios";
 
 const backendURL = "http://localhost:5000";
@@ -42,7 +41,6 @@ export default function ReportForm() {
   // Handle media uploads
   const handleMediaChange = (e) => {
     const files = Array.from(e.target.files);
-
     const validFiles = files.filter(
       (file) => file.type.startsWith("image/") || file.type.startsWith("video/")
     );
@@ -60,16 +58,16 @@ export default function ReportForm() {
     const dataToSend = new FormData();
     dataToSend.append("incident", formData.incident);
     dataToSend.append("details", formData.details);
-
     formData.media.forEach((file, index) => {
-      dataToSend.append(media[`${index}`], file);
+      dataToSend.append(`media[${index}]`, file);
     });
     dataToSend.append("latitude", locationData.latitude);
     dataToSend.append("longitude", locationData.longitude);
 
     try {
       const response = await axios.post(
-        `${backendURL}/user/reports, dataToSend`
+        `${backendURL}/user/reports`,
+        dataToSend
       );
       console.log(response.data);
 
@@ -115,7 +113,7 @@ export default function ReportForm() {
             <option value="">Select an incident</option>
             <option value="Fire">🔥 Fire</option>
             <option value="Traffic accident">🚦 Traffic</option>
-            <option value="Infrastructure accident">🏗 Infrastructure</option>
+            <option value="Infrastructure accident">🏗️ Infrastructure</option>
             <option value="Workplace">🏢 Workplace</option>
           </select>
 
@@ -173,7 +171,7 @@ export default function ReportForm() {
           <input
             type="file"
             name="media"
-            accept="image/,video/"
+            accept="image/*,video/*"
             multiple
             onChange={handleMediaChange}
             ref={fileInputRef}
