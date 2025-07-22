@@ -80,7 +80,7 @@ class MediaResource(Resource):
             try:
                 db.session.delete(media)
                 db.session.commit()
-                return {'message':'Media deleted successfully'}
+                return {'message':'Media deleted successfully'}, 200
             except SQLAlchemyError:
                 db.session.rollback()
                 return {'message':'Database error: Media not deleted'}, 500
