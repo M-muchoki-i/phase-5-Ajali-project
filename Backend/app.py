@@ -1,21 +1,28 @@
 from flask import Flask
 from flask_migrate import Migrate
 from flask_restful import Api
-from models import db 
+from models import db
+
+# Import your resource classes
 from resources.user import UserResources
+from resources.report import ReportResource
+from resources.location import LocationResource
 
 app = Flask(__name__)
 
-
-# configuring our flask app through the config object
+# Configure the app
 app.config["SQLALCHEMY_DATABASE_URI"] = "sqlite:///ajali.db"
+app.config["SQLALCHEMY_TRACK_MODIFICATIONS"] = False  # optional but recommended
 
-# link flask-restful with flask
+# Initialize extensions
 api = Api(app)
-
 migrate = Migrate(app, db)
-
-# link our db to the flask app
 db.init_app(app)
 
-api.add_resource(UserResources, '/user', '/user/<int:id>') 
+# Register resource routes
+api.add_resource(UserResources, '/user', '/user/<int:id>')
+api.add_resource(ReportResource, '/reports', '/reports/<int:report_id>')
+api.add_resource(LocationResource, '/locations', '/locations/<int:location_id>')
+
+if __name__ == '__main__':
+    app.run(debug=True)
