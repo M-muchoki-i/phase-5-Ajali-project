@@ -75,7 +75,7 @@ export function User() {
               htmlFor=" firstname"
               className="block text-sm font-medium text-gray-700 mb-1"
             >
-              Name <span className="text-red-500">*</span>
+              firstName <span className="text-red-500">*</span>
             </label>
             <input
               type="text"
