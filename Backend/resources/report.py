@@ -9,9 +9,9 @@ class ReportResource(Resource):
     parser.add_argument('Location',required=True,  type=float, help='Location not provided')
     parser.add_argument('Media', type=str, help='Media not attached')
 
-    def get(self, report_id=None):
-        if report_id:
-            report = Report.query.get(report_id)
+    def get(self, id=None):
+        if id:
+            report = Report.query.get(id=id)
             if report:
                 return report.to_dict()
             
@@ -33,8 +33,8 @@ class ReportResource(Resource):
             return {'message':'Database error'}, 500
 
     
-    def patch(self, report_id):
-        report = Report.query.get(report_id)
+    def patch(self, id=None):
+        report = Report.query.get(id=id)
         if not report:
             return {"message": "Report not found"}, 404
         
@@ -51,8 +51,8 @@ class ReportResource(Resource):
             db.session.rollback()
             return {"message": "Database error"}, 500
 
-    def delete(self, report_id):
-        report = Report.query.get(report_id)
+    def delete(self, id=None):
+        report = Report.query.get(id=id)
         if not report:
             return {"message": "Report not found"}, 404
         
@@ -63,3 +63,13 @@ class ReportResource(Resource):
         except SQLAlchemyError:
             db.session.rollback()
             return {"message": "Database error"}, 500
+        
+class MediaResource(Resource):
+    def get(self, id=None):
+        report = Report.query.get(id=id)
+        if report:
+            media = report.media
+            return [m.to_dict() for m in media]
+        else:
+            return {'message':'Media not found'}, 403
+        
