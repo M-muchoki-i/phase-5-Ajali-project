@@ -21,25 +21,27 @@ db = SQLAlchemy(metadata=metadata)
 # ------------------------------
 class User(db.Model, SerializerMixin):
     __tablename__ = "users"
+    serialize_rules = ('-reports', '-emergency_contacts','-password' )
 
     id = db.Column(db.Integer, primary_key=True)
     first_name = db.Column(db.String, nullable=False)
     last_name = db.Column(db.String, nullable=False)
     email = db.Column(db.String, unique=True, nullable=False)
-    password = db.Column(db.String)
+    password = db.Column(db.VARCHAR,nullable=True)
     phone_number = db.Column(db.String, unique=True, nullable=False)
     created_at = db.Column(db.TIMESTAMP, default=datetime.utcnow)
 
     reports = db.relationship('Report', back_populates='user', cascade='all, delete')
     emergency_contacts = db.relationship('EmergencyContact', back_populates='user', cascade='all, delete')
-    status_reports_changed = db.relationship('StatusReport', back_populates='admin', cascade='all, delete')
+    # status_reports_changed = db.relationship('StatusReport', back_populates='admin', cascade='all, delete')
 
-    serialize_rules = ('-reports.user', '-emergency_contacts.user', '-status_reports_changed.admin')
+    
 
 
 
 class Report(db.Model, SerializerMixin):
     __tablename__ = "reports"
+    serialize_rules = ('-user.reports', '-status_reports.report', '-media_attachments.report', '-location.report')
 
     id = db.Column(db.Integer, primary_key=True)
     message = db.Column(db.Text, nullable=False)
@@ -52,12 +54,13 @@ class Report(db.Model, SerializerMixin):
     media_attachments = db.relationship('MediaAttachment', back_populates='report', cascade='all, delete')
     status_reports = db.relationship('StatusReport', back_populates='report', cascade='all, delete')
 
-    serialize_rules = ('-user.reports', '-status_reports.report', '-media_attachments.report', '-location.report')
+   
 
 
 
 class EmergencyContact(db.Model, SerializerMixin):
     __tablename__ = "emergency_contacts"
+    serialize_rules = ('-user.reports', '-user.emergency_contacts')
 
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String, nullable=False)
@@ -69,7 +72,7 @@ class EmergencyContact(db.Model, SerializerMixin):
     user_id = db.Column(db.Integer, db.ForeignKey('users.id'), nullable=False)
     user = db.relationship('User', back_populates='emergency_contacts')
 
-    serialize_rules = ('-user.reports', '-user.emergency_contacts')
+   
 
 
 
@@ -95,10 +98,10 @@ class StatusReport(db.Model, SerializerMixin):
     changed_at = db.Column(db.TIMESTAMP, default=datetime.utcnow)
 
     report_id = db.Column(db.Integer, db.ForeignKey('reports.id'), nullable=False)
-    changed_by = db.Column(db.Integer, db.ForeignKey('users.id'), nullable=False)
+    # changed_by = db.Column(db.Integer, db.ForeignKey('users.id'), nullable=False)
 
     report = db.relationship('Report', back_populates='status_reports')
-    admin = db.relationship('User', back_populates='status_reports_changed')
+    # admin = db.relationship('User', back_populates='status_reports_changed')
 
 
 

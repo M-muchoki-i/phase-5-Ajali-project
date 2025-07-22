@@ -1,5 +1,6 @@
 from flask_restful import Resource, reqparse
 from models import db, Report
+from flask_jwt_extended import jwt_required
 from sqlalchemy.exc import SQLAlchemyError
 
 class ReportResource(Resource):
@@ -9,9 +10,17 @@ class ReportResource(Resource):
     parser.add_argument('Location',required=True,  type=float, help='Location not provided')
     parser.add_argument('Media', type=str, help='Media not attached')
 
+
+    @jwt_required()
+    def get(self, report_id=None):
+
+        if report_id:
+            report = Report.query.get(report_id)
+
     def get(self, id=None):
         if id:
             report = Report.query.get(id=id)
+
             if report:
                 return report.to_dict()
             
