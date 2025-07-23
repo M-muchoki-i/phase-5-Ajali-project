@@ -1,6 +1,7 @@
-
 from flask_sqlalchemy import SQLAlchemy
 from sqlalchemy import MetaData
+from sqlalchemy.orm import relationship
+from models import db
 from sqlalchemy_serializer import SerializerMixin
 from datetime import datetime
 
@@ -115,5 +116,27 @@ class Location(db.Model, SerializerMixin):
     report_id = db.Column(db.Integer, db.ForeignKey('reports.id'), nullable=False)
     report = db.relationship('Report', back_populates='location')
 
+    
+class StatusUpdate(db.Model):
+    __tablename__ = "status_updates"
+
+    id = db.Column(db.Integer, primary_key=True)
+    report_id = db.Column(db.Integer, db.ForeignKey("reports.id"), nullable=False)
+    updated_by = db.Column(db.String, nullable=False)
+    status = db.Column(db.String, nullable=False)
+    timestamp = db.Column(db.DateTime, nullable=False)
+
+    def to_dict(self):
+        return {
+            "id": self.id,
+            "report_id": self.report_id,
+            "updated_by": self.updated_by,
+            "status": self.status,
+            "timestamp": self.timestamp.isoformat()
+        }
+
+
 
    
+
+    

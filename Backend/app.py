@@ -1,21 +1,29 @@
 from flask import Flask
+from flask_cors import CORS  # ✅ Import CORS
 from flask_migrate import Migrate
 from flask_restful import Api
-from models import db 
+
+from models import db
 from resources.user import UserResources
+from status_update import StatusUpdateResource
 
 app = Flask(__name__)
 
+# ✅ Enable CORS for frontend-backend communication
+CORS(app)
 
-# configuring our flask app through the config object
-app.config["SQLALCHEMY_DATABASE_URI"] = "sqlite:///ajali.db"
+# Config
+app.config["SQLALCHEMY_DATABASE_URI"] = "sqlite:///../instance/ajali.db"
+app.config["SQLALCHEMY_TRACK_MODIFICATIONS"] = False
 
-# link flask-restful with flask
+# Initialize extensions
+db.init_app(app)
+migrate = Migrate(app, db)
 api = Api(app)
 
-migrate = Migrate(app, db)
+# Register Resources
+api.add_resource(UserResources, '/user', '/user/<int:id>')
+api.add_resource(StatusUpdateResource, '/status_updates', '/status_updates/<int:id>')
 
-# link our db to the flask app
-db.init_app(app)
-
-api.add_resource(UserResources, '/user', '/user/<int:id>') 
+if __name__ == "__main__":
+    app.run(debug=True)
