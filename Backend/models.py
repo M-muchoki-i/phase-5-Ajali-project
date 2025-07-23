@@ -1,7 +1,6 @@
 from flask_sqlalchemy import SQLAlchemy
 from sqlalchemy import MetaData
-from sqlalchemy.orm import relationship
-from models import db
+#from sqlalchemy.orm import relationship
 from sqlalchemy_serializer import SerializerMixin
 from datetime import datetime
 
@@ -30,7 +29,7 @@ class User(db.Model, SerializerMixin):
     email = db.Column(db.String, unique=True, nullable=False)
     password = db.Column(db.VARCHAR,nullable=True)
     phone_number = db.Column(db.String, unique=True, nullable=False)
-    created_at = db.Column(db.TIMESTAMP, default=datetime.utcnow)
+    created_at = db.Column(db.TIMESTAMP)
 
     reports = db.relationship('Report', back_populates='user', cascade='all, delete')
     emergency_contacts = db.relationship('EmergencyContact', back_populates='user', cascade='all, delete')
@@ -42,18 +41,18 @@ class User(db.Model, SerializerMixin):
 
 class Report(db.Model, SerializerMixin):
     __tablename__ = "reports"
-    serialize_rules = ('-user.reports', '-status_reports.report', '-media_attachments.report', '-location.report')
+    serialize_rules = ('-user', '-status_updates', '-media_attachments', '-location')
 
     id = db.Column(db.Integer, primary_key=True)
     message = db.Column(db.Text, nullable=False)
-    created_at = db.Column(db.TIMESTAMP, default=datetime.utcnow)
 
     user_id = db.Column(db.Integer, db.ForeignKey('users.id'), nullable=False)
     user = db.relationship('User', back_populates='reports')
 
     location = db.relationship('Location', back_populates='report', uselist=False, cascade='all, delete')
     media_attachments = db.relationship('MediaAttachment', back_populates='report', cascade='all, delete')
-    status_reports = db.relationship('StatusReport', back_populates='report', cascade='all, delete')
+    created_at = db.Column(db.TIMESTAMP)
+    #status_updates = db.relationship('StatusUpdate', back_populates='report', cascade='all, delete')
 
    
 
@@ -83,26 +82,26 @@ class MediaAttachment(db.Model, SerializerMixin):
     id = db.Column(db.Integer, primary_key=True)
     file_url = db.Column(db.String, nullable=False)
     media_type = db.Column(db.String, nullable=False)  
-    uploaded_at = db.Column(db.TIMESTAMP, default=datetime.utcnow)
+    uploaded_at = db.Column(db.TIMESTAMP)
 
     report_id = db.Column(db.Integer, db.ForeignKey('reports.id'), nullable=False)
     report = db.relationship('Report', back_populates='media_attachments')
 
 
 
-class StatusReport(db.Model, SerializerMixin):
-    __tablename__ = "status_reports"
+# class StatusReport(db.Model, SerializerMixin):
+#     __tablename__ = "status_reports"
 
-    id = db.Column(db.Integer, primary_key=True)
-    previous_status = db.Column(db.String, nullable=False)
-    new_status = db.Column(db.String, nullable=False)
-    changed_at = db.Column(db.TIMESTAMP, default=datetime.utcnow)
+#     id = db.Column(db.Integer, primary_key=True)
+#     previous_status = db.Column(db.String, nullable=False)
+#     new_status = db.Column(db.String, nullable=False)
+#     changed_at = db.Column(db.TIMESTAMP)
 
-    report_id = db.Column(db.Integer, db.ForeignKey('reports.id'), nullable=False)
-    # changed_by = db.Column(db.Integer, db.ForeignKey('users.id'), nullable=False)
+#     report_id = db.Column(db.Integer, db.ForeignKey('reports.id'), nullable=False)
+#     # changed_by = db.Column(db.Integer, db.ForeignKey('users.id'), nullable=False)
 
-    report = db.relationship('Report', back_populates='status_reports')
-    # admin = db.relationship('User', back_populates='status_reports_changed')
+#     report = db.relationship('Report', back_populates='status_reports')
+#     # admin = db.relationship('User', back_populates='status_reports_changed')
 
 
 
@@ -114,7 +113,7 @@ class Location(db.Model, SerializerMixin):
     longitude = db.Column(db.Float, nullable=False)
     address = db.Column(db.String)
 
-    created_at = db.Column(db.TIMESTAMP, default=datetime.utcnow)
+    created_at = db.Column(db.TIMESTAMP)
 
     report_id = db.Column(db.Integer, db.ForeignKey('reports.id'), nullable=False)
     report = db.relationship('Report', back_populates='location')
@@ -129,14 +128,16 @@ class StatusUpdate(db.Model):
     status = db.Column(db.String, nullable=False)
     timestamp = db.Column(db.DateTime, nullable=False)
 
-    def to_dict(self):
-        return {
-            "id": self.id,
-            "report_id": self.report_id,
-            "updated_by": self.updated_by,
-            "status": self.status,
-            "timestamp": self.timestamp.isoformat()
-        }
+    #report = db.relationship('Report', back_populates='status_update')
+
+    # def to_dict(self):
+    #     return {
+    #         "id": self.id,
+    #         "report_id": self.report_id,
+    #         "updated_by": self.updated_by,
+    #         "status": self.status,
+    #         "timestamp": self.timestamp.isoformat()
+    #     }
 
 
 

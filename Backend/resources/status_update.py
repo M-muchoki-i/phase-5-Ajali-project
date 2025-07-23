@@ -1,7 +1,7 @@
 from flask import request
 from flask_restful import Resource
-from models import db
-from models.status_update import StatusUpdate
+from models import db, StatusUpdate
+#from models.status_update import StatusUpdate
 from datetime import datetime
 
 
