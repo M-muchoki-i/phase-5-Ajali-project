@@ -29,7 +29,7 @@ class User(db.Model, SerializerMixin):
     email = db.Column(db.String, unique=True, nullable=False)
     password = db.Column(db.VARCHAR,nullable=True)
     phone_number = db.Column(db.String, unique=True, nullable=False)
-    created_at = db.Column(db.TIMESTAMP, default=datetime.utcnow)
+    created_at = db.Column(db.TIMESTAMP)
 
     reports = db.relationship('Report', back_populates='user', cascade='all, delete')
     emergency_contacts = db.relationship('EmergencyContact', back_populates='user', cascade='all, delete')
@@ -51,7 +51,7 @@ class Report(db.Model, SerializerMixin):
 
     location = db.relationship('Location', back_populates='report', uselist=False, cascade='all, delete')
     media_attachments = db.relationship('MediaAttachment', back_populates='report', cascade='all, delete')
-    created_at = db.Column(db.TIMESTAMP, default=datetime.utcnow)
+    created_at = db.Column(db.TIMESTAMP)
     #status_updates = db.relationship('StatusUpdate', back_populates='report', cascade='all, delete')
 
    
@@ -82,7 +82,7 @@ class MediaAttachment(db.Model, SerializerMixin):
     id = db.Column(db.Integer, primary_key=True)
     file_url = db.Column(db.String, nullable=False)
     media_type = db.Column(db.String, nullable=False)  
-    uploaded_at = db.Column(db.TIMESTAMP, default=datetime.utcnow)
+    uploaded_at = db.Column(db.TIMESTAMP)
 
     report_id = db.Column(db.Integer, db.ForeignKey('reports.id'), nullable=False)
     report = db.relationship('Report', back_populates='media_attachments')
@@ -95,7 +95,7 @@ class MediaAttachment(db.Model, SerializerMixin):
 #     id = db.Column(db.Integer, primary_key=True)
 #     previous_status = db.Column(db.String, nullable=False)
 #     new_status = db.Column(db.String, nullable=False)
-#     changed_at = db.Column(db.TIMESTAMP, default=datetime.utcnow)
+#     changed_at = db.Column(db.TIMESTAMP)
 
 #     report_id = db.Column(db.Integer, db.ForeignKey('reports.id'), nullable=False)
 #     # changed_by = db.Column(db.Integer, db.ForeignKey('users.id'), nullable=False)
@@ -113,7 +113,7 @@ class Location(db.Model, SerializerMixin):
     longitude = db.Column(db.Float, nullable=False)
     address = db.Column(db.String)
 
-    created_at = db.Column(db.TIMESTAMP, default=datetime.utcnow)
+    created_at = db.Column(db.TIMESTAMP)
 
     report_id = db.Column(db.Integer, db.ForeignKey('reports.id'), nullable=False)
     report = db.relationship('Report', back_populates='location')
