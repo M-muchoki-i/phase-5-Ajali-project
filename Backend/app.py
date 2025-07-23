@@ -31,7 +31,7 @@ app.config["JWT_SECRET_KEY"] = os.environ.get("JWT_SECRET")  # Change this!
 jwt = JWTManager(app)
 
 bcrypt = Bcrypt(app)
-#app = Flask(__name__)
+
 
 # Initialize extensions
 api = Api(app)
@@ -45,7 +45,7 @@ api.add_resource(UserResources, "/user", "/user/<int:id>")
 api.add_resource(LoginResource, "/login")
 api.add_resource(ReportResource, "/reports", "/reports/<int:report_id>")
 api.add_resource(LocationResource, "/locations", "/locations/<int:location_id>")
-api.add_resource(StatusUpdateResource, "/status_updates/<int:id>")
+api.add_resource(StatusUpdateResource, "/status_updates","/status_updates/<int:id>")
 
 if __name__ == "__main__":
     app.run(debug=True)
