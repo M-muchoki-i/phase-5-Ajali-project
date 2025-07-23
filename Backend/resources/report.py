@@ -65,6 +65,8 @@ class ReportResource(Resource):
         except SQLAlchemyError:
             db.session.rollback()
             return {"message": "Database error"}, 500
+
+
         
 class MediaResource(Resource):
     def get(self, id=None):
@@ -86,5 +88,6 @@ class MediaResource(Resource):
             except SQLAlchemyError:
                 db.session.rollback()
                 return {'message':'Database error: Media not deleted'}, 500
+
 
 
