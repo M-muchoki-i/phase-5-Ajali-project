@@ -45,7 +45,7 @@ api.add_resource(UserResources, "/user", "/user/<int:id>")
 api.add_resource(LoginResource, "/login")
 api.add_resource(ReportResource, "/reports", "/reports/<int:report_id>")
 api.add_resource(LocationResource, "/locations", "/locations/<int:location_id>")
-api.add_resources(StatusUpdateResources, "/status_update /<int:id>")
+api.add_resources(StatusUpdateResource, "/status_update /<int:id>")
 if __name__ == "__main__":
     app.run(debug=True)
 
