@@ -41,18 +41,18 @@ class User(db.Model, SerializerMixin):
 
 class Report(db.Model, SerializerMixin):
     __tablename__ = "reports"
-    serialize_rules = ('-user.reports', '-status_reports.report', '-media_attachments.report', '-location.report')
+    serialize_rules = ('-user', '-status_updates', '-media_attachments', '-location')
 
     id = db.Column(db.Integer, primary_key=True)
     message = db.Column(db.Text, nullable=False)
-    created_at = db.Column(db.TIMESTAMP, default=datetime.utcnow)
 
     user_id = db.Column(db.Integer, db.ForeignKey('users.id'), nullable=False)
     user = db.relationship('User', back_populates='reports')
 
     location = db.relationship('Location', back_populates='report', uselist=False, cascade='all, delete')
     media_attachments = db.relationship('MediaAttachment', back_populates='report', cascade='all, delete')
-    status_reports = db.relationship('StatusReport', back_populates='report', cascade='all, delete')
+    created_at = db.Column(db.TIMESTAMP, default=datetime.utcnow)
+    #status_updates = db.relationship('StatusUpdate', back_populates='report', cascade='all, delete')
 
    
 
@@ -119,7 +119,7 @@ class Location(db.Model, SerializerMixin):
     report = db.relationship('Report', back_populates='location')
 
     
-class StatusUpdate(db.Model, SerializerMixin):
+class StatusUpdate(db.Model):
     __tablename__ = "status_updates"
 
     id = db.Column(db.Integer, primary_key=True)
@@ -128,7 +128,7 @@ class StatusUpdate(db.Model, SerializerMixin):
     status = db.Column(db.String, nullable=False)
     timestamp = db.Column(db.DateTime, nullable=False)
 
-    report = db.relationship('Report', back_populates='status_updates')
+    #report = db.relationship('Report', back_populates='status_update')
 
     # def to_dict(self):
     #     return {
