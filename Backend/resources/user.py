@@ -1,6 +1,9 @@
-from flask_restful import Resource,reqparse
-from models import db,User
 
+from flask_restful import Resource,reqparse
+
+from models import db,User
+from flask_bcrypt import generate_password_hash,check_password_hash
+from flask_jwt_extended import  create_access_token
 
 
 class UserResources(Resource):
@@ -9,7 +12,7 @@ class UserResources(Resource):
     parser.add_argument("last_name", type=str, required=True, help="last_name is required")
     parser.add_argument("email", type=str, required=True, help="Email is required")
     parser.add_argument("password", type=str, required=True)
-    parser.add_argument("role", type=str, required=False)
+    # parser.add_argument("role", type=str, required=False)
     parser.add_argument("phone_number", type=str, required=True, help="phone_number is required")
 
     def get(self,id=None):
@@ -33,7 +36,10 @@ class UserResources(Resource):
 
         if phone_number:
             return {"message":"phone_number already taken"}
-        # step.2 save users info
+        # step 2.encrypt the password
+        hash = generate_password_hash(data['password']).decode('utf-8')
+        # step.3 save users info
+        data['password'] = hash
         user_data =User(**data)
         db.session.add(user_data)
         db. session.commit()
@@ -75,52 +81,23 @@ class UserResources(Resource):
 class LoginResource(Resource):
     parser = reqparse.RequestParser()
     parser.add_argument("email", type=str, required=True, help="Email is required")
-    parser.add_argument(
-        "password", type=str, required=True, help="Password is required"
-    )
-
-    def get(self, id=None):
-        # Fetch all users or a single user by ID
-        if id is None:
-            users = User.query.all()
-            return [user.to_dict() for user in users], 200
-        user = User.query.filter_by(id=id).first()
-        if not user:
-            return {"message": "User not found"}, 404
-        return user.to_dict(), 200
-
+    parser.add_argument("password", type=str, required=True, help="Password is required")
     def post(self):
         # Handle user login
         data = self.parser.parse_args()
         user = User.query.filter_by(email=data["email"]).first()
+        if user is None:
+            return{"message":"incorrect email address or password"}, 401
 
-        if not user or user.password != data["password"]:
+        if check_password_hash(user.password,data['password']):
+            access_token=create_access_token( identity=(user.id))
             # For hashed passwords:
             # if not user or not check_password_hash(user.password, data["password"]):
-            return {"message": "Invalid email or password"}, 401
+            return {"message": "Login successful", "user":user.to_dict(), "acess_token": access_token}, 200
+        else:
+            return{"message":"incorrect email or password"},401
 
-        return {"message": "Login successful", "user": user.to_dict()}, 200
 
-    def patch(self, id):
-        # Update user login-related info
-        user = User.query.filter_by(id=id).first()
-        if not user:
-            return {"message": "User not found"}, 404
 
-        data = self.parser.parse_args()
-        if data["email"]:
-            user.email = data["email"]
-        if data["password"]:
-            user.password = data["password"]
 
-        db.session.commit()
-        return {"message": "Login info updated", "user": user.to_dict()}, 200
-
-    def delete(self, id):
-        # Delete a user account by ID
-        user = User.query.filter_by(id=id).first()
-        if not user:
-            return {"message": "User not found"}, 404
-        db.session.delete(user)
-        db.session.commit()
-        return {"message": "User login info deleted"}, 202
+ 
