@@ -5,10 +5,11 @@ from flask import request
 from sqlalchemy.exc import SQLAlchemyError
 
 class ReportResource(Resource):
-    # parser = reqparse.RequestParser()
+    parser = reqparse.RequestParser()
     # parser.add_argument('Incident', type=str, required=True, help='Incident type is required')
-    # parser.add_argument('Description', type=str, help='Please provide a description')
-    # parser.add_argument('Location',required=True,  type=float, help='Location not provided')
+    parser.add_argument('message', type=str, help='Please provide a message')
+    parser.add_argument('Location',required=True,  type=float, help='Location not provided')
+
     # parser.add_argument('Media', type=str, help='Media not attached')
 
     def get(self, id=None):
@@ -22,7 +23,9 @@ class ReportResource(Resource):
         return [r.to_dict() for r in reports]
 
     def post(self):
+
         data = request.get_json()
+
 
         try:
             report = Report(
@@ -32,10 +35,11 @@ class ReportResource(Resource):
             db.session.commit()
             return report.to_dict(), 201
         except Exception as e:
-            return {'message': str(e)}, 400
-        except SQLAlchemyError:
             db.session.rollback()
-            return {'message':'Database error'}, 500
+            return {'message': str(e)}, 400
+        # except SQLAlchemyError:
+        #     db.session.rollback()
+        #     return {'message':'Database error'}, 500
 
     
     def patch(self, id=None):
