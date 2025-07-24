@@ -8,6 +8,8 @@ import EmergencyContact from './pages/emergencycontacts.jsx';
 import { User } from './pages/User.jsx';
 import { Login } from './pages/Login.jsx';
 import ReportForm from './pages/report-form.jsx';
+import StatusUpdate from './pages/status_update.jsx';
+import Index from './pages/Home.jsx';
 
 const router = createBrowserRouter([
   {
@@ -16,24 +18,28 @@ const router = createBrowserRouter([
   },
   {
     path: "/login",
-    element: <Login />
+    element: <Login />,
   },
   {
     path: "/emergency-contact",
-    element: <EmergencyContact />
+    element: <EmergencyContact />,
   },
   {
-    path: "/home",
-    element: <LocationPage />
+    path: "/location",
+    element: <LocationPage />,
   },
   {
     path: "/user",
-    element:<User />
+    element: <User />,
+  },
+  {
+    path: "/status-update",
+    element: <StatusUpdate />,
   },
   {
     path: "/",
-    element: <h1>Welcome to Ajali</h1>
-  }
+    element: <Index/>,
+  },
 ]);
 
 createRoot(document.getElementById('root')).render(
