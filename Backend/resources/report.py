@@ -21,7 +21,7 @@ class ReportResource(Resource):
         return [r.to_dict() for r in reports]
 
     def post(self):
-        data = ReportResource.parser.parse_args()
+        d ata = ReportResource.parser.parse_args()
 
         try:
             report = Report(**data)
