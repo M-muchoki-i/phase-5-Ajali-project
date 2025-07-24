@@ -6,8 +6,9 @@ from datetime import datetime
 # from flask_jwt_extended import jwt_required
 
 
-class StatusUpdateResource(Resource):
-    # @jwt_required
+
+class  StatusUpdateResource(Resource):
+
     def get(self, id=None):
         if id :
             status_updates = StatusUpdate.query.get(id)
