@@ -5,7 +5,7 @@ from models import db, StatusUpdate
 from datetime import datetime
 
 
-class StatusUpdateResource(Resource):
+class  StatusUpdateResource(Resource):
     def get(self, id=None):
         if id:
             update = StatusUpdate.query.get(id)

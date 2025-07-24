@@ -1,14 +1,15 @@
-from flask_restful import Resource, reqparse
+from flask_restful import Resource
 from models import db, Report
+from flask import request
 #from flask_jwt_extended import jwt_required
 from sqlalchemy.exc import SQLAlchemyError
 
 class ReportResource(Resource):
-    parser = reqparse.RequestParser()
-    parser.add_argument('Incident', type=str, required=True, help='Incident type is required')
-    parser.add_argument('Description', type=str, help='Please provide a description')
-    parser.add_argument('Location',required=True,  type=float, help='Location not provided')
-    parser.add_argument('Media', type=str, help='Media not attached')
+    # parser = reqparse.RequestParser()
+    # parser.add_argument('Incident', type=str, required=True, help='Incident type is required')
+    # parser.add_argument('Description', type=str, help='Please provide a description')
+    # parser.add_argument('Location',required=True,  type=float, help='Location not provided')
+    # parser.add_argument('Media', type=str, help='Media not attached')
 
     def get(self, id=None):
         if id:
@@ -21,10 +22,12 @@ class ReportResource(Resource):
         return [r.to_dict() for r in reports]
 
     def post(self):
-        data = ReportResource.parser.parse_args()
+        data = request.get_json()
 
         try:
-            report = Report(**data)
+            report = Report(
+              message =  data["message"],    
+            )
             db.session.add(report)
             db.session.commit()
             return report.to_dict(), 201
@@ -40,10 +43,9 @@ class ReportResource(Resource):
         if not report:
             return {"message": "Report not found"}, 404
         
-        data = ReportResource.parser.parse_args()
-        for key, value in data.items():
-            setattr(report, key, value)
-        
+        data = request.get_json()
+        if 'message' in data:
+            self.message = data['message']        
         try:
             db.session.commit()
             return report.to_dict()
