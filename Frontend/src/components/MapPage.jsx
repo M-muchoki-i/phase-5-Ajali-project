@@ -26,8 +26,19 @@ export default function MapPage({ position,
                 <button onClick={onLocate} title="Find my location"></button> {/*button will only carry and svg image from online for better appearance, no text*/}
                 </div>
                 {/*imported map components from react leaflet will enter here*/}
-                <MapContainer>
-                    <TileLayer />
+                <MapContainer
+                    center={position || [51.505, -0.09]}
+                    zoom={13}
+                    style={{ height: "100%", width: "100%" }}
+                    whenCreated={(map) => (mapRef.current = map)}
+                    className="z-0">
+                    <TileLayer
+                        url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
+                        attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors' />
+                    <LocationMarker
+                        position={position}
+                        setPosition={setPosition}
+                        isUserLocation={true} />
                 </MapContainer>
 
                 {/*box to show coordinates at corner of the page layout */}
