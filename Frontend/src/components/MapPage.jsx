@@ -1,5 +1,5 @@
 import { useEffect, useRef } from "react";
-import { MapContainer, TileLayer } from "react-leaflet";
+import { MapContainer, TileLayer, Marker, Popup, useMapEvents } from "react-leaflet";
 import "leaflet/dist/leaflet.css";
 
 export default function MapPage({ position,
@@ -41,3 +41,26 @@ export default function MapPage({ position,
         </>
     )
 }
+
+// the location marker component will allow us to use mapEvents from leaflet to get the locatio
+function LocationMarker({ position, setPosition, isUserLocation }) {
+    
+    const map = useMapEvents({
+        click(e) {
+            setPosition({});
+        },
+        locationfound(e) {
+            setPosition({});
+            map.flyTo(e.latlng, 13);
+        }
+    }); 
+
+    return position ? (
+        <Marker>
+            <Popup>
+                {isUserLocation ? "Current location" : "Selected location"}
+            </Popup>
+        </Marker>
+    ) : null;
+    
+};
