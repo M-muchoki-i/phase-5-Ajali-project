@@ -1,29 +1,28 @@
-
-import { StrictMode } from 'react'
-import { createRoot } from 'react-dom/client'
-import {createBrowserRouter,RouterProvider,} from "react-router-dom";
-import './index.css'
-import App from './App.jsx'
-import LocationPage from './components/locationMap.jsx';
-import EmergencyContact from './pages/emergencycontacts.jsx';
-import { User } from './pages/User.jsx';
-import { Login } from './pages/Login.jsx';
-import ReportForm from './pages/report-form.jsx';
-import StatusUpdate from './pages/status_update.jsx';
-import Index from './pages/Home.jsx';
+// import { StrictMode } from 'react'
+// import { createRoot } from 'react-dom/client'
+// import {createBrowserRouter,RouterProvider,} from "react-router-dom";
+// import './index.css'
+// import App from './App.jsx'
+// import LocationPage from './components/locationMap.jsx';
+// import EmergencyContact from './pages/emergencycontacts.jsx';
+// import { User } from './pages/User.jsx';
+// import { Login } from './pages/Login.jsx';
+//import ReportForm from './pages/report-form.jsx';
+//import App from "./App.jsx";
 
 import { StrictMode } from "react";
 import { createRoot } from "react-dom/client";
 import { createBrowserRouter, RouterProvider } from "react-router-dom";
 import "./index.css";
-
-import App from "./App.jsx";
+// pages imports
+import Index from './pages/Home.jsx';
+import StatusUpdate from './pages/status_update.jsx';
 import LocationPage from "./components/locationMap.jsx";
 import EmergencyContact from "./pages/emergencycontacts.jsx";
 import { User } from "./pages/User.jsx";
 import { Login } from "./pages/Login.jsx";
 import ReportForm from "./pages/report-form.jsx";
-import MainLayout from "./pages/MainLayout.jsx"; // ensures the pages are wrapped  to include the fixed footer and bottom padding.
+import MainLayout from "./MainLayout.jsx"; // ensures the pages are wrapped  to include the fixed footer and bottom padding.
 
 
 const router = createBrowserRouter([

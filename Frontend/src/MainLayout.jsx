@@ -1,5 +1,5 @@
 // src/layouts/MainLayout.jsx
-import Footer from "../pages/Footer";
+import Footer from "./pages/Footer";
 
 export default function MainLayout({ children }) {
   return (
