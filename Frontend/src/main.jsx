@@ -37,7 +37,6 @@ const router = createBrowserRouter([
   },
   {
     path: "/login",
-
     element: <Login />,
   },
   {
@@ -45,26 +44,25 @@ const router = createBrowserRouter([
     element: <EmergencyContact />,
   },
   {
-    path: "/location",
+    path: "/share-location",
     element: <LocationPage />,
   },
-  {
-    path: "/user",
-    element: <User />,
-  },
+  // {
+  //   path: "/user",
+  //   element: <User />,
+  // },
   {
     path: "/status-update",
     element: <StatusUpdate />,
   },
   {
     path: "/",
-    element: <Index/>,
-
-    element: (
-      <MainLayout>
-        <Login />
-      </MainLayout>
-    ),
+    element: <Index/>
+    // element: (
+    //   <MainLayout>
+    //     <Login />
+    //   </MainLayout>
+    // ),
   },
   {
     path: "/emergency-contact",
@@ -83,7 +81,7 @@ const router = createBrowserRouter([
     ),
   },
   {
-    path: "/user",
+    path: "/signup",
     element: (
       <MainLayout>
         <User />
