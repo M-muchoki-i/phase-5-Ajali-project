@@ -20,7 +20,7 @@ export default function MapPage({ position,
         //first fragment is a container for the entire page
         <>
             <div>
-                {/*conditional render for loading states  will do here*/}
+                {/*conditional render for loading/error states  will do here*/}
             
                 <div> {/*div for button styling*/}
                 <button onClick={onLocate} title="Find my location"></button> {/*button will only carry and svg image from online for better appearance, no text*/}

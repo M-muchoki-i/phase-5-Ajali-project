@@ -16,6 +16,7 @@ import { createBrowserRouter, RouterProvider } from "react-router-dom";
 import "./index.css";
 // pages imports
 import Index from './pages/Home.jsx';
+import MapPage from "./components/MapPage.jsx";
 import StatusUpdate from './pages/status_update.jsx';
 import LocationPage from "./components/locationMap.jsx";
 import EmergencyContact from "./pages/emergencycontacts.jsx";
@@ -90,10 +91,10 @@ const router = createBrowserRouter([
     ),
   },
   {
-    path: "/",
+    path: "/map",
     element: (
       <MainLayout>
-        <h1 className="text-center text-2xl mt-10">Welcome to Ajali</h1>
+        <MapPage />
       </MainLayout>
     ),
 
