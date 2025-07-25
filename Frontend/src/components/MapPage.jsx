@@ -58,10 +58,10 @@ function LocationMarker({ position, setPosition, isUserLocation }) {
     
     const map = useMapEvents({
         click(e) {
-            setPosition({});
+            setPosition({ lat: e.latlng.lat, lng: e.latlng.lng });
         },
         locationfound(e) {
-            setPosition({});
+            setPosition({ lat: e.latlng.lat, lng: e.latlng.lng });
             map.flyTo(e.latlng, 13);
         }
     }); 
