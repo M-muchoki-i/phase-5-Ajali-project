@@ -2,10 +2,11 @@ import { useEffect, useRef } from "react";
 import { MapContainer, TileLayer, Marker, Popup, useMapEvents } from "react-leaflet";
 import "leaflet/dist/leaflet.css";
 
+
 export default function MapPage({ position,
     setPosition,
-    loading,
-    error,
+    // loading,
+    // error,
     onLocate, }) {
     // this instantiates the map initial state for reference as a mutable variable
     const mapRef = useRef();
