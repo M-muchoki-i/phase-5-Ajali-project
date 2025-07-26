@@ -1,7 +1,16 @@
 import { useEffect, useRef } from "react";
 import { MapContainer, TileLayer, Marker, Popup, useMapEvents } from "react-leaflet";
 import "leaflet/dist/leaflet.css";
+import L from 'leaflet'
 
+// Fix for default marker icons in Leaflet
+// Leaflet(map library) will not work without this in place DO NOT REMOVE!!!
+delete L.Icon.Default.prototype._getIconUrl;
+L.Icon.Default.mergeOptions({
+    iconRetinaUrl: "https://unpkg.com/leaflet@1.7.1/dist/images/marker-icon-2x.png",
+    iconUrl: "https://unpkg.com/leaflet@1.7.1/dist/images/marker-icon.png",
+    shadowUrl: "https://unpkg.com/leaflet@1.7.1/dist/images/marker-shadow.png",
+});
 
 export default function MapPage({ position,
     setPosition,
@@ -11,16 +20,24 @@ export default function MapPage({ position,
     // this instantiates the map initial state for reference as a mutable variable
     const mapRef = useRef();
 
-    useEffect(() => {  //this allows us to et the positional coords on component mount
-        if (position && mapRef.current) {
-            mapRef.current.flyTo(position, 13)
+    //we need to create a function to trigger location finding
+    const handleLocate = () => {
+        //this triggers map.locatd() in location marker when mounted
+        if (mapRef.current) {
+            mapRef.current.locate();
         }
-    },[position]) //position as a dependancy for the side-effect
+    };
+
+    // useEffect(() => {  //this allows us to et the positional coords on component mount
+    //     if (position && mapRef.current) {
+    //         mapRef.current.flyTo(position, 13)
+    //     }
+    // },[position]) //position as a dependancy for the side-effect
 
     return (
         //first fragment is a container for the entire page
         <>
-            <div>
+            <div className="h-screen w-screen flex flex-col">
                 {/*conditional render for loading/error states  will do here*/}
             
                 <div> {/*div for button styling*/}
