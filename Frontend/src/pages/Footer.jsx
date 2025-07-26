@@ -1,38 +1,39 @@
 export default function Footer() {
   return (
-    <footer className="fixed bottom-0 w-full bg-red-700 text-white py-4 z-50 shadow-md">
-      <div className="max-w-6xl mx-auto px-4 grid md:grid-cols-3 gap-6 text-sm">
-        <div>
-          <h4 className="font-semibold text-lg">🚓 Police Emergency</h4>
+    <footer className="w-full bg-white/5 backdrop-blur-lg border-t border-white/10 py-8 z-10 shadow-lg">
+      <div className="max-w-7xl mx-auto px-4 grid md:grid-cols-3 gap-8 text-sm text-white/90">
+        <div className="bg-white/10 backdrop-blur-md px-6 py-4 rounded-xl border border-white/20 shadow-xl flex flex-col items-center text-center">
+
+          <h4 className="font-bold text-xl mb-2 text-blue-300 flex items-center gap-2">🚓 Police Emergency</h4>
           <p>
             Toll-Free:{" "}
             <a
-              href="tel:911"
-              className="font-bold underline hover:text-gray-200"
+              href="tel:999"
+              className="font-extrabold text-red-400 underline hover:text-red-300 transition-colors duration-200 text-lg"
             >
               911
             </a>
           </p>
         </div>
-        <div>
-          <h4 className="font-semibold text-lg">🔥 Fire Department</h4>
+        <div className="bg-white/10 backdrop-blur-md px-6 py-4 rounded-xl border border-white/20 shadow-xl flex flex-col items-center text-center">
+          <h4 className="font-bold text-xl mb-2 text-blue-300 flex items-center gap-2">🔥 Fire Department</h4>
           <p>
             Call now:{" "}
             <a
               href="tel:0722111178"
-              className="font-bold underline hover:text-gray-200"
+              className="font-extrabold text-red-400 underline hover:text-red-300 transition-colors duration-200 text-lg"
             >
               0722 111 178
             </a>
           </p>
         </div>
-        <div>
-          <h4 className="font-semibold text-lg">🚑 Ambulance Services</h4>
+        <div className="bg-white/10 backdrop-blur-md px-6 py-4 rounded-xl border border-white/20 shadow-xl flex flex-col items-center text-center">
+          <h4 className="font-bold text-xl mb-2 text-blue-300 flex items-center gap-2">🚑 Ambulance Services</h4>
           <p>
             Toll-Free:{" "}
             <a
               href="tel:999"
-              className="font-bold underline hover:text-gray-200"
+              className="font-extrabold text-red-400 underline hover:text-red-300 transition-colors duration-200 text-lg"
             >
               999
             </a>
