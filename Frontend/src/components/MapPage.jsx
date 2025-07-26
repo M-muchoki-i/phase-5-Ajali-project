@@ -44,43 +44,64 @@ export default function MapPage({ position,
                     <div className="absolute w-80 h-80 bg-red-500 rounded-full mix-blend-multiply filter blur-xl opacity-70 animate-blob animation-delay-2000 top-1/2 right-1/4"></div>
                 </div>
                 <main className="flex-1 flex items-center justify-center p-4">
-                    <div className="relative z-10 bg-white/5 backdrop-blur-xl rounded-2xl border border-white/10 shadow-2xl p-6 flex flex-col max-w-5xl w-full max-h-[90vh] overflow-hidden">
-                    <div className="p-4 bg-white/5 backdrop-blur-lg border border-white/10 rounded-xl shadow-md flex justify-between items-center mb-4"> {/*div for button styling*/}
-                        <h1 className="text-xl font-bold">Map Location</h1>
-                        <button onClick={onLocate} title="Find my location" className="bg-blue-700 p-3 rounded-full shadow-lg hover:bg-gray-100 transition-all duration-300 transform hover:scale-105 active:scale-95 focus:outline-none focus:ring-4 focus:ring-blue-400 focus:ring-opacity-75">
-                            <svg className="w-6 h-6 text-gray-800 dark:text-white" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 24 24">
-                                <path stroke="currentColor" strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 13a3 3 0 1 0 0-6 3 3 0 0 0 0 6Z" />
-                                <path stroke="currentColor" strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M17.8 13.938h-.011a7 7 0 1 0-11.464.144h-.016l.14.171c.1.127.2.251.3.371L12 21l5.13-6.248c.194-.209.374-.429.54-.659l.13-.155Z" />
-                            </svg>
+                    {/* The giant floating card container for the map and its controls */}
+                    <div className="relative z-10 bg-white/5 backdrop-blur-xl rounded-2xl border border-white/10 shadow-2xl p-6 flex flex-col max-w-5xl w-full h-full max-h-[90vh] overflow-y-auto">
 
-                        </button> {/*button will only carry and svg image from online for better appearance, no text*/}
-                    </div>
-                    
-                    {/*imported map components from react leaflet will enter here*/}
-                    <MapContainer
-                        center={position || [51.505, -0.09]}
-                        zoom={13}
-                        style={{ flexGrow: 1 }}
-                        whenCreated={(map) => (mapRef.current = map)}
-                        className="z-0">
-                        <TileLayer
-                            url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
-                            attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors' />
-                        <LocationMarker
-                            position={position}
-                            setPosition={setPosition}
-                            isUserLocation={true}
-                        />
-                    </MapContainer>
-
-                    {/*box to show coordinates at corner of the page layout */}
-                    {position && (
-                        <div className="absolute bottom-6 left-6 bg-white p-4 rounded-xl shadow-lg z-[1000] border border-gray-200">
-                            <div className="text-base font-semibold text-gray-800 mb-1">Cordinates</div>
-                            <div>{position.lat.toFixed(5)},{position.lng.toFixed(5)}</div>
+                        {/* Header/Control Panel - Glassy and prominent, now inside the card */}
+                        <div className="p-4 bg-white/5 backdrop-blur-lg border border-white/10 rounded-xl shadow-md flex flex-shrink-0 justify-between items-center mb-4"> {/* Added margin-bottom */}
+                            <h1 className="text-2xl font-extrabold text-blue-300 drop-shadow-lg">Map Location</h1>
+                            {/* Find My Location Button - Glassy and interactive */}
+                            <button
+                                onClick={onLocate}
+                                title="Find my location"
+                                className="relative bg-blue-700 hover:bg-blue-800 text-white font-bold py-2 px-4 rounded-lg text-sm shadow-lg hover:shadow-blue-500/40 transition-all duration-300 transform hover:scale-105 flex items-center gap-2
+                                       before:absolute before:inset-0 before:bg-white/10 before:rounded-lg before:opacity-0 hover:before:opacity-100 before:transition-opacity before:duration-300
+                                       border border-blue-500/50 hover:border-blue-400/70"
+                            >
+                                <svg
+                                    xmlns="http://www.w3.org/2000/svg"
+                                    className="h-5 w-5"
+                                    viewBox="0 0 20 20"
+                                    fill="currentColor"
+                                >
+                                    <path
+                                        fillRule="evenodd"
+                                        d="M5.05 4.05a7 7 0 119.9 9.9L10 18.9l-4.95-4.95a7 7 0 010-9.9zM10 11a2 2 0 100-4 2 2 0 000 4z"
+                                        clipRule="evenodd"
+                                    />
+                                </svg>
+                                Find My Location
+                            </button>
                         </div>
-                    )}
-                </div></main>
+
+                        {/* Map Container - now takes full height/width of its parent card */}
+                        <MapContainer
+                            center={position || [0, 0]} // Default to 0,0 if no position, LocationMarker will try to find user's
+                            zoom={2} // Start with a lower zoom to show more of the world
+                             // Fill parent card
+                            whenCreated={(map) => (mapRef.current = map)}
+                            className="z-0 flex-grow rounded-lg overflow-hidden min-h-[500px]" // Added rounded-lg to map itself
+                        >
+                            <TileLayer
+                                url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
+                                attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
+                            />
+                            <LocationMarker
+                                position={position}
+                                setPosition={setPosition}
+                                isUserLocation={true} // This marker is for the user's location
+                            />
+                        </MapContainer>
+
+                        {/* Coordinate Display Box - Glassy and subtle, now inside the card */}
+                        {position && (
+                            <div className="p-4 flex-shrink-0 bg-white/5 backdrop-blur-lg border border-white/10 rounded-xl shadow-md mt-4"> {/* Added margin-top */}
+                                <div className="font-semibold text-blue-300">Current Coordinates:</div>
+                                <div className="text-lg text-white/90">{position.lat.toFixed(5)}, {position.lng.toFixed(5)}</div>
+                            </div>
+                        )}
+                    </div>
+                </main>
                 
             </div>
         </>
