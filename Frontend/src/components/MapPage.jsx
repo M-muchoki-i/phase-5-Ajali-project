@@ -12,13 +12,10 @@ L.Icon.Default.mergeOptions({
     shadowUrl: "https://unpkg.com/leaflet@1.7.1/dist/images/marker-shadow.png",
 });
 
-export default function MapPage({ position,
-    setPosition,
-    // loading,
-    // error,
-    onLocate, }) {
+export default function MapPage() {
     // this instantiates the map initial state for reference as a mutable variable
     const mapRef = useRef();
+    
 
     //we need to create a function to trigger location finding
     // const handleLocate = () => {
