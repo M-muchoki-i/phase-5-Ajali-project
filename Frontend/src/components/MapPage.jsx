@@ -1,7 +1,7 @@
 import { useEffect, useRef, useState } from "react";
 import { MapContainer, TileLayer, Marker, Popup, useMapEvents } from "react-leaflet";
 import "leaflet/dist/leaflet.css";
-import L from 'leaflet'
+import L, { latLng } from 'leaflet'
 import { useNavigate } from "react-router-dom";
 
 // Fix for default marker icons in Leaflet
@@ -134,38 +134,33 @@ export default function MapPage() {
 }
 
 // the location marker component will allow us to use mapEvents from leaflet to get the locatio
-function LocationMarker({ position, setPosition, isUserLocation }) {
+function LocationEvents({onLocationFound, onLocationError }) {
 
-    const mapRef = useRef();
+    //const mapRef = useRef();
     
     const map = useMapEvents({
-        click(e) {
-            setPosition({ lat: e.latlng.lat, lng: e.latlng.lng });
-            map.flyTo(e.latlang, map.getZoom())
-        },
         locationfound(e) {
-            setPosition({ lat: e.latlng.lat, lng: e.latlng.lng });
-            map.flyTo(e.latlng, 13);
+            onLocationFound(e)
         },
         //add error handlingn in case map load fails 
         locationerror(e) {
             console.error('location error:', e.message);
             alert('Could not find your location. Ensure device location is on')
-        }
+        },
+        click(e) {
+            onLocationFound({
+                latlng: e.latlng,
+                bounds: e.bounds
+            });
+        },
     }); 
 
-    useEffect(() => {
-        if (isUserLocation && mapRef.current) {
-            mapRef.current.locate()
-        }
-    }, [isUserLocation, mapRef])
+    // useEffect(() => {
+    //     if (isUserLocation && mapRef.current) {
+    //         mapRef.current.locate()
+    //     }
+    // }, [isUserLocation, mapRef])
 
-    return position ? (
-        <Marker>
-            <Popup className="font-semibold text-gray-800 text-base">
-                {isUserLocation ? "Current location" : "Selected location"}
-            </Popup>
-        </Marker>
-    ) : null;
+    return null;
     
 };
