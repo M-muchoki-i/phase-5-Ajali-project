@@ -1,7 +1,8 @@
-import { useEffect, useRef } from "react";
+import { useEffect, useRef, useState } from "react";
 import { MapContainer, TileLayer, Marker, Popup, useMapEvents } from "react-leaflet";
 import "leaflet/dist/leaflet.css";
 import L from 'leaflet'
+import { useNavigate } from "react-router-dom";
 
 // Fix for default marker icons in Leaflet
 // Leaflet(map library) will not work without this in place DO NOT REMOVE!!!
@@ -15,21 +16,49 @@ L.Icon.Default.mergeOptions({
 export default function MapPage() {
     // this instantiates the map initial state for reference as a mutable variable
     const mapRef = useRef();
-    
+    const navigate = useNavigate
+    const [position, setPosition] = useState(null);
+    const [locationSelected, setLocationSelected] = useState(false);
+    const [isLocating, setIsLocating] = useState(false);
+    const [locationError, setLocationError] = useState(null);
+
 
     //we need to create a function to trigger location finding
-    // const handleLocate = () => {
-    //     //this triggers map.locatd() in location marker when mounted
-    //     if (mapRef.current) {
-    //         mapRef.current.locate();
-    //     }
-    // };
-
-    useEffect(() => {  //this allows us to et the positional coords on component mount
-        if (position && mapRef.current) {
-            mapRef.current.flyTo(position, 13)
+    const handleLocate = () => {
+        setIsLocating(true);
+        setLocationError(null);
+        //this triggers map.locatd() in location marker when mounted
+        if (mapRef.current) {
+            mapRef.current.locate({
+                setView: true,
+                maxZoom: 16,
+                timeout: 10000,
+                enableHighAccuracy: true
+            });
         }
-    },[position]) //position as a dependancy for the side-effect
+    };
+
+    const handleLocationFound = (e) => {
+        const newPosition = e.latlng;
+        setPosition(newPosition);
+        setLocationSelected(true);
+        setIsLocating(false);
+        mapRef.current.flyTo(newPosition, 16);
+    };
+
+    const handleButtonClick = () => {
+        if (!locationSelected) {
+            handleLocate();
+        } else {
+            navigate('/report')
+        }
+     };
+
+    // useEffect(() => {  //this allows us to et the positional coords on component mount
+    //     if (position && mapRef.current) {
+    //         mapRef.current.flyTo(position, 13)
+    //     }
+    // },[position]) //position as a dependancy for the side-effect
 
     return (
         //first fragment is a container for the entire page
