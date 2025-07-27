@@ -111,14 +111,28 @@ export default function MapPage() {
                                 url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
                                 attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
                             />
-                            <LocationMarker
-                                position={position}
-                                setPosition={setPosition}
-                                isUserLocation={true} // This marker is for the user's location
+                            <LocationEvents
+                                onLocationFound={handleLocationFound}
+                                onLocationError={(e) => {
+                                    setLocationError(e.message);
+                                    setIsLocating(false);
+                                }}
                             />
+                            {position && (
+                                <Marker position={position}>
+                                    <Popup className="font-semibold text-gray-800 text-base">
+                                        {locationSelected ? "Selected location" : "Your current location"}
+                                    </Popup>
+                                </Marker>
+                            )}
                         </MapContainer>
 
                         {/* Coordinate Display Box - Glassy and subtle, now inside the card */}
+                        {locationError && (
+                            <div className="p-4 mt-4 bg-red-500/10 backdrop-blur-lg border border-red-500/20 rounded-xl text-red-300">
+                                Error: {locationError}
+                            </div>
+                        )}
                         {position && (
                             <div className="p-4 flex-shrink-0 bg-white/5 backdrop-blur-lg border border-white/10 rounded-xl shadow-md mt-4"> {/* Added margin-top */}
                                 <div className="font-semibold text-blue-300">Current Coordinates:</div>
@@ -127,6 +141,33 @@ export default function MapPage() {
                         )}
                     </div>
                 </main>
+
+                {/*to add a fixed button at page bottom*/}
+                <div className="fixed bottom-0 left-0 right-0 flex justify-center p-4 z-20">
+                    <button
+                        onClick={handleButtonClick}
+                        disabled={isLocating}
+                        className={`relative ${locationSelected ? 'bg-red-600 hover:bg-red-700' : 'bg-red-700 hover:bg-red-800'} 
+                              text-white font-bold py-4 px-8 rounded-full text-lg shadow-xl transition-all duration-300
+                              flex items-center gap-2 border border-red-500/50 hover:border-red-400/70
+                              min-w-[300px] justify-center ${isLocating ? 'opacity-70 cursor-not-allowed' : 'hover:scale-105 hover:shadow-red-500/30'}`}
+                    >{locationSelected ? (
+                            <>
+                                <span>Submit Report</span>
+                                <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
+                                </svg>
+                            </>
+                        ) : (
+                                <>
+                                    <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" />
+                                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 11a3 3 0 11-6 0 3 3 0 016 0z" />
+                                    </svg>
+                                    <span>Select Location</span>
+                                </>  
+                    )}</button>
+                </div>
                 
             </div>
         </>
