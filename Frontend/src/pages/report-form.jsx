@@ -94,8 +94,8 @@ export default function ReportForm() {
   };
 
   return (
-    <div className="fixed inset-0 flex items-center justify-center p-4 bg-gray-100 bg-opacity-80 backdrop-blur-sm">
-      <div className="max-w-md mx-auto p-6 bg-red-50 rounded-2xl border border-red-100 shadow-lg">
+    <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-gray-950 via-blue-950 to-red-950 font-inter text-white relative overflow-hidden p-4 sm:p-6 lg:p-8">
+      <div className="max-w-md mx-auto p-6 bg-red-50/60 rounded-2xl border border-red-100 shadow-lg">
         <h2 className="text-3xl font-bold text-red-800 mb-6 ml-12">
           Report an emergency
         </h2>
@@ -105,7 +105,7 @@ export default function ReportForm() {
             name="incident"
             value={formData.incident}
             onChange={handleTextChange}
-            className="w-full p-3 border-2 border-gray-200 rounded-full bg-white 
+            className="w-full text-black p-3 border-2 border-gray-200 rounded-full bg-white 
                         focus:border-red-400 focus:ring-2 focus:ring-red-100 
                         transition-all appearance-none cursor-pointer
                         hover:border-red-300"
@@ -133,7 +133,7 @@ export default function ReportForm() {
           <h4 className="text-xl font-bold text-red-700 mb-1 mt-4">Location</h4>
           <div className="flex flex-row w-full items-center">
             <div
-              className="flex flex-1 rounded-full border-2 border-gray-300 overflow-hidden
+              className="flex flex-1 text-black rounded-full border-2 border-gray-300 overflow-hidden
                         hover:border-red-300 transition-colors bg-gray-50"
             >
               <input
@@ -175,7 +175,7 @@ export default function ReportForm() {
             multiple
             onChange={handleMediaChange}
             ref={fileInputRef}
-            className="border-2 border-dashed border-gray-300 rounded-lg p-4 text-center
+            className="border-2 border-dashed border-gray-300 rounded-lg p-4 text-center text-black
                         hover:border-red-300 transition-colors bg-gray-50 w-full"
           />
 
