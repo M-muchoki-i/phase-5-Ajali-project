@@ -10,7 +10,7 @@ const Index = () => {
   };
 
   const handleContactUs = () => {
-    // Contact functionality will go here
+    // Contact functionality would go here
     console.log("Contact us clicked");
   };
 

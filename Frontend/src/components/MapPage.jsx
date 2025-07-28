@@ -27,7 +27,7 @@ export default function MapPage() {
     const handleLocate = () => {
         setIsLocating(true);
         setLocationError(null);
-        //this triggers map.locatd() in location marker when mounted
+        //this triggers map.locate() in location marker when mounted
         if (mapRef.current) {
             mapRef.current.locate({
                 setView: true,
