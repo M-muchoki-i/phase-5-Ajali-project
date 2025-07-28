@@ -1,17 +1,17 @@
-const Index = () => {
-  const handleLogin = () => {
-    // Login functionality will go here
-    console.log("Login clicked");
-  };
+import { Link } from "react-router-dom";
 
-  const handleSignup = () => {
-    // Signup functionality will go here
-    console.log("Signup clicked");
-  };
+const Index = () => {
+//   const handleLogin = () => {
+//       // Login functionality will go here
+//       <Link to ="Login"></Link>
+//     // console.log("Login clicked");
+//   };
+
+ 
 
   const handleContactUs = () => {
     // Contact functionality will go here
-    console.log("Contact us clicked");
+    // console.log("Contact us clicked");
   };
 
     return (
@@ -41,39 +41,40 @@ const Index = () => {
 
               {/* Action Buttons */}
               <div className="flex flex-col sm:flex-row gap-4 justify-center lg:justify-start">
-                <button
-                  onClick={handleLogin}
-                  className="bg-red-600 hover:bg-red-700 text-white font-bold py-4 px-8 rounded-lg text-lg shadow-lg hover:shadow-red-500/30 transition-all duration-300 transform hover:scale-105 min-w-[160px] flex items-center justify-center gap-2"
-                >
-                  <svg
-                    xmlns="http://www.w3.org/2000/svg"
-                    className="h-5 w-5"
-                    viewBox="0 0 20 20"
-                    fill="currentColor"
+                <Link to="Login">
+                  <button
+                    //   onClick={handleLogin}
+                    className="bg-red-600 hover:bg-red-700 text-white font-bold py-4 px-8 rounded-lg text-lg shadow-lg hover:shadow-red-500/30 transition-all duration-300 transform hover:scale-105 min-w-[160px] flex items-center justify-center gap-2"
                   >
-                    <path
-                      fillRule="evenodd"
-                      d="M10 9a3 3 0 100-6 3 3 0 000 6zm-7 9a7 7 0 1114 0H3z"
-                      clipRule="evenodd"
-                    />
-                  </svg>
-                  Login
-                </button>
+                    <svg
+                      xmlns="http://www.w3.org/2000/svg"
+                      className="h-5 w-5"
+                      viewBox="0 0 20 20"
+                      fill="currentColor"
+                    >
+                      <path
+                        fillRule="evenodd"
+                        d="M10 9a3 3 0 100-6 3 3 0 000 6zm-7 9a7 7 0 1114 0H3z"
+                        clipRule="evenodd"
+                      />
+                    </svg>
+                    Login
+                  </button>
+                </Link>
 
-                <button
-                  onClick={handleSignup}
-                  className="bg-blue-600 hover:bg-blue-700 text-white font-bold py-4 px-8 rounded-lg text-lg shadow-lg hover:shadow-blue-500/30 transition-all duration-300 transform hover:scale-105 min-w-[160px] flex items-center justify-center gap-2"
-                >
-                  <svg
-                    xmlns="http://www.w3.org/2000/svg"
-                    className="h-5 w-5"
-                    viewBox="0 0 20 20"
-                    fill="currentColor"
-                  >
-                    <path d="M8 9a3 3 0 100-6 3 3 0 000 6zM8 11a6 6 0 016 6H2a6 6 0 016-6z" />
-                  </svg>
-                  Sign Up
-                </button>
+                <Link to="SignUp">
+                  <button className="bg-blue-600 hover:bg-blue-700 text-white font-bold py-4 px-8 rounded-lg text-lg shadow-lg hover:shadow-blue-500/30 transition-all duration-300 transform hover:scale-105 min-w-[160px] flex items-center justify-center gap-2">
+                    <svg
+                      xmlns="http://www.w3.org/2000/svg"
+                      className="h-5 w-5"
+                      viewBox="0 0 20 20"
+                      fill="currentColor"
+                    >
+                      <path d="M8 9a3 3 0 100-6 3 3 0 000 6zM8 11a6 6 0 016 6H2a6 6 0 016-6z" />
+                    </svg>
+                    SignUp
+                  </button>
+                </Link>
               </div>
 
               {/* Trust Indicators */}
@@ -115,7 +116,7 @@ const Index = () => {
                           clipRule="evenodd"
                         />
                       </svg>
-                    </div>                    
+                    </div>
                   </div>
                 </div>
               </div>
