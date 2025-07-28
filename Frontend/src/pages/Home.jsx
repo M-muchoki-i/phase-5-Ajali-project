@@ -22,6 +22,48 @@ const Index = () => {
     return (
       <div className="min-h-screen bg-gradient-to-br from-gray-900 via-blue-900 to-gray-900 flex flex-col">
         {/* Hero Section */}
+        <nav className="relative z-10 bg-white/5 backdrop-blur-lg border-b border-white/10 shadow-xl">
+          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div className="flex justify-between h-16 items-center">
+              {/* Brand + Links */}
+              <div className="flex items-center space-x-6">
+                <span className="text-2xl font-extrabold text-red-400 drop-shadow-lg">Ajali!</span>
+                <div className="hidden md:flex space-x-4">
+                  <a href="/" className="hover:bg-red-700 px-3 py-2 rounded-md text-sm font-medium">Home</a>
+                  <a href="/report" className="hover:bg-red-700 px-3 py-2 rounded-md text-sm font-medium">Report</a>
+                  <a href="/location" className="hover:bg-red-700 px-3 py-2 rounded-md text-sm font-medium">Location</a>
+                  <a href="/emergency-contacts" className="hover:bg-red-700 px-3 py-2 rounded-md text-sm font-medium">Emergency Contacts</a>
+                  <a href="/status-updates" className="hover:bg-red-700 px-3 py-2 rounded-md text-sm font-medium">Status Updates</a>
+                  <a href="/media" className="hover:bg-red-700 px-3 py-2 rounded-md text-sm font-medium">Media</a>
+                </div>
+              </div>
+
+              {/* Auth buttons */}
+              <div className="hidden md:flex items-center space-x-4">
+                <button className="hover:bg-white hover:text-red-600 px-3 py-2 rounded-md text-sm font-medium">Login</button>
+                <button className="bg-white text-red-600 hover:bg-gray-200 px-3 py-2 rounded-md text-sm font-medium">Logout</button>
+              </div>
+
+              {/* Mobile hamburger */}
+              <div className="md:hidden">
+                <button id="mobile-menu-button" className="text-white text-xl">☰</button>
+              </div>
+            </div>
+          </div>
+
+          {/* Mobile Dropdown */}
+          <div id="mobile-menu" className="md:hidden hidden px-4 pb-4">
+            <a href="/" className="block py-2">Home</a>
+            <a href="/report" className="block py-2">Report</a>
+            <a href="/location" className="block py-2">Location</a>
+            <a href="/emergency-contacts" className="block py-2">Emergency Contacts</a>
+            <a href="/status-updates" className="block py-2">Status Updates</a>
+            <a href="/media" className="block py-2">Media</a>
+            <button className="block py-2 text-left w-full">Login</button>
+            <button className="block py-2 text-left w-full">Logout</button>
+          </div>
+        </nav>
+
         <main className="flex-1 flex items-center justify-center px-4 sm:px-6 lg:px-8 py-12">
           <div className="max-w-6xl w-full grid lg:grid-cols-2 gap-12 items-center">
             {/* Left Content */}

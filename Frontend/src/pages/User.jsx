@@ -49,7 +49,7 @@ export function User() {
     <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-gray-950 via-blue-950 to-red-950 font-inter text-white relative overflow-hidden p-4 sm:p-6 lg:p-8">
       <div className="relative z-10 max-w-md w-full p-8 sm:p-10 bg-white/5 backdrop-blur-xl rounded-2xl border border-white/10 shadow-2xl space-y-6 animate-fade-in">
         <div className="text-center">
-          <h2 className="text-3xl font-bold text-green-700 mb-2">
+          <h2 className="text-3xl font-bold text-red-700 mb-2">
             Welcome to Ajali!
           </h2>
           <p className="text-sm text-gray-500">
