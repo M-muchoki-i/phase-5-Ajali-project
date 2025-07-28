@@ -1,7 +1,7 @@
 import { useEffect, useRef, useState } from "react";
 import { MapContainer, TileLayer, Marker, Popup, useMapEvents } from "react-leaflet";
 import "leaflet/dist/leaflet.css";
-import L, { latLng } from 'leaflet'
+import L ,{ latLng } from 'leaflet'
 import { useNavigate } from "react-router-dom";
 
 // Fix for default marker icons in Leaflet
@@ -39,7 +39,7 @@ export default function MapPage() {
     };
 
     const handleLocationFound = (e) => {
-        const newPosition = e.latlng;
+        const newPosition = e.latLng;
         setPosition(newPosition);
         setLocationSelected(true);
         setIsLocating(false);
@@ -190,7 +190,7 @@ function LocationEvents({onLocationFound, onLocationError }) {
         },
         click(e) {
             onLocationFound({
-                latlng: e.latlng,
+                latlng: e.latLng,
                 bounds: e.bounds
             });
         },
