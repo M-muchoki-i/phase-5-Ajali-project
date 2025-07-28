@@ -1,16 +1,16 @@
 const Index = () => {
   const handleLogin = () => {
-    // Login functionality would go here
+    // Login functionality will go here
     console.log("Login clicked");
   };
 
   const handleSignup = () => {
-    // Signup functionality would go here
+    // Signup functionality will go here
     console.log("Signup clicked");
   };
 
   const handleContactUs = () => {
-    // Contact functionality would go here
+    // Contact functionality will go here
     console.log("Contact us clicked");
   };
 
@@ -23,9 +23,9 @@ const Index = () => {
             <div className="text-center lg:text-left space-y-8 animate-fade-in">
               <div className="space-y-6">
                 <h1 className="text-4xl sm:text-5xl lg:text-6xl font-bold text-white leading-tight">
-                  <span className="text-red-500 animate-pulse">Emergency</span>
+                  <span className="text-red-500 animate-pulse">AJALI</span>
                   <span className="block bg-clip-text text-transparent bg-gradient-to-r from-red-500 to-blue-500">
-                    Response
+                    Emergency Response
                   </span>
                   <span className="block">When Seconds Matter</span>
                 </h1>
@@ -115,16 +115,7 @@ const Index = () => {
                           clipRule="evenodd"
                         />
                       </svg>
-                    </div>
-                    <h3 className="text-2xl font-bold text-white">
-                      Emergency Alert System
-                    </h3>
-                    <p className="text-white/80">
-                      Press the button below to simulate an emergency alert
-                    </p>
-                    <button className="mt-4 bg-red-600 hover:bg-red-700 text-white font-bold py-3 px-6 rounded-lg shadow-lg transition-all duration-300 transform hover:scale-105">
-                      Trigger Emergency Alert
-                    </button>
+                    </div>                    
                   </div>
                 </div>
               </div>

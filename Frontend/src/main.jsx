@@ -1,29 +1,29 @@
-
-import { StrictMode } from 'react'
-import { createRoot } from 'react-dom/client'
-import {createBrowserRouter,RouterProvider,} from "react-router-dom";
-import './index.css'
-import App from './App.jsx'
-import LocationPage from './components/locationMap.jsx';
-import EmergencyContact from './pages/emergencycontacts.jsx';
-import { User } from './pages/User.jsx';
-import { Login } from './pages/Login.jsx';
-import ReportForm from './pages/report-form.jsx';
-import StatusUpdate from './pages/status_update.jsx';
-import Index from './pages/Home.jsx';
+// import { StrictMode } from 'react'
+// import { createRoot } from 'react-dom/client'
+// import {createBrowserRouter,RouterProvider,} from "react-router-dom";
+// import './index.css'
+// import App from './App.jsx'
+// import LocationPage from './components/locationMap.jsx';
+// import EmergencyContact from './pages/emergencycontacts.jsx';
+// import { User } from './pages/User.jsx';
+// import { Login } from './pages/Login.jsx';
+//import ReportForm from './pages/report-form.jsx';
+//import App from "./App.jsx";
 
 import { StrictMode } from "react";
 import { createRoot } from "react-dom/client";
 import { createBrowserRouter, RouterProvider } from "react-router-dom";
 import "./index.css";
-
-import App from "./App.jsx";
+// pages imports
+import Index from './pages/Home.jsx';
+import MapPage from "./components/MapPage.jsx";
+import StatusUpdate from './pages/status_update.jsx';
 import LocationPage from "./components/locationMap.jsx";
 import EmergencyContact from "./pages/emergencycontacts.jsx";
 import { User } from "./pages/User.jsx";
 import { Login } from "./pages/Login.jsx";
 import ReportForm from "./pages/report-form.jsx";
-import MainLayout from "./pages/MainLayout.jsx"; // ensures the pages are wrapped  to include the fixed footer and bottom padding.
+import MainLayout from "./MainLayout.jsx"; // ensures the pages are wrapped  to include the fixed footer and bottom padding.
 
 
 const router = createBrowserRouter([
@@ -37,7 +37,6 @@ const router = createBrowserRouter([
   },
   {
     path: "/login",
-
     element: <Login />,
   },
   {
@@ -45,26 +44,25 @@ const router = createBrowserRouter([
     element: <EmergencyContact />,
   },
   {
-    path: "/location",
+    path: "/share-location",
     element: <LocationPage />,
   },
-  {
-    path: "/user",
-    element: <User />,
-  },
+  // {
+  //   path: "/user",
+  //   element: <User />,
+  // },
   {
     path: "/status-update",
     element: <StatusUpdate />,
   },
   {
     path: "/",
-    element: <Index/>,
-
-    element: (
-      <MainLayout>
-        <Login />
-      </MainLayout>
-    ),
+    element: <Index/>
+    // element: (
+    //   <MainLayout>
+    //     <Login />
+    //   </MainLayout>
+    // ),
   },
   {
     path: "/emergency-contact",
@@ -83,7 +81,7 @@ const router = createBrowserRouter([
     ),
   },
   {
-    path: "/user",
+    path: "/signup",
     element: (
       <MainLayout>
         <User />
@@ -91,10 +89,10 @@ const router = createBrowserRouter([
     ),
   },
   {
-    path: "/",
+    path: "/map",
     element: (
       <MainLayout>
-        <h1 className="text-center text-2xl mt-10">Welcome to Ajali</h1>
+        <MapPage />
       </MainLayout>
     ),
 
