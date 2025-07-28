@@ -50,7 +50,7 @@ export default function MapPage() {
         if (!locationSelected) {
             handleLocate();
         } else {
-            navigate('/report')
+            navigate(`/report?lat=${position.lat}&lng=${position.lng}`)
         }
      };
 
@@ -74,8 +74,8 @@ export default function MapPage() {
                     <div className="relative z-10 bg-white/5 backdrop-blur-xl rounded-2xl border border-white/10 shadow-2xl p-6 flex flex-col max-w-5xl w-full h-full max-h-[90vh] overflow-y-auto">
 
                         {/* Header/Control Panel - Glassy and prominent, now inside the card */}
-                        <div className="p-4 bg-white/5 backdrop-blur-lg border border-white/10 rounded-xl shadow-md flex flex-shrink-0 justify-between items-center mb-4"> {/* Added margin-bottom */}
-                            <h1 className="text-2xl font-extrabold text-blue-300 drop-shadow-lg">Map Location</h1>
+                        <div className="p-2 bg-white/5 backdrop-blur-lg border border-white/10 rounded-xl shadow-md flex flex-shrink-0 justify-between items-center mb-2"> {/* Added margin-bottom */}
+                            <h1 className="text-2xl font-extrabold text-blue-300 drop-shadow-lg">Select emergency location</h1>
                             {/* Find My Location Button - Glassy and interactive */}
                             <button
                                 onClick={handleLocate}
