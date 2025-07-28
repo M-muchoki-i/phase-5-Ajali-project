@@ -1,20 +1,22 @@
-import { useState, useRef } from "react";
+import { useState, useRef, useEffect } from "react";
 import axios from "axios";
+import { useSearchParams } from "react-router-dom";
 
 const backendURL = "http://localhost:5000";
 
 export default function ReportForm() {
   // State for form data
+  const [searchParams] = useSearchParams(); //using url params to pass location when navigating
   const [formData, setFormData] = useState({
     incident: "",
     details: "",
     media: [],
   });
 
-  // State for location
+  // initialize location data from url params
   const [locationData, setLocationData] = useState({
-    latitude: "",
-    longitude: "",
+    latitude: searchParams.get("lat") || "",
+    longitude: searchParams.get("lng") || "",
   });
 
   // Ref for file input
@@ -66,7 +68,7 @@ export default function ReportForm() {
 
     try {
       const response = await axios.post(
-        `${backendURL}/user/reports`,
+        `${backendURL}/reports`,
         dataToSend
       );
       console.log(response.data);
@@ -92,6 +94,12 @@ export default function ReportForm() {
       console.error("Error adding incident", error);
     }
   };
+
+  useEffect(() => {
+    const lat = searchParams.get("lat");
+    const lng = searchParams.get("lng");
+    if (lat && lng) { setLocationData({ latitude: lat, longitude: lng }); }
+  }, [searchParams]);
 
   return (
     <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-gray-950 via-blue-950 to-red-950 font-inter text-white relative overflow-hidden p-4 sm:p-6 lg:p-8">
@@ -120,12 +128,12 @@ export default function ReportForm() {
           <h3 className="text-xl font-bold text-red-700 mb-1 mt-4">Details</h3>
           <input
             type="text"
-            placeholder="e.g. Accident on Alali Rd involving two vehicles, Fire at Mjengo Apartments etc."
+            placeholder="e.g. Accident on 42nd Avenue involving two vehicles, Fire at Mjengo Apartments etc."
             name="details"
             value={formData.details}
             onChange={handleTextChange}
             required
-            className="w-full p-3 border border-gray-300 rounded-full bg-white 
+            className="w-full p-3 border text-black border-gray-300 rounded-full bg-white 
                         focus:border-red-400 focus:ring-2 focus:ring-red-100 
                         transition-all placeholder-gray-400"
           />
