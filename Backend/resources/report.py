@@ -6,9 +6,9 @@ from sqlalchemy.exc import SQLAlchemyError
 
 class ReportResource(Resource):
     parser = reqparse.RequestParser()
-    # parser.add_argument('Incident', type=str, required=True, help='Incident type is required')
-    parser.add_argument('message', type=str, help='Please provide a message')
-    parser.add_argument('Location',required=True,  type=float, help='Location not provided')
+    parser.add_argument('Incident', type=str, required=True, help='Incident type is required')
+    parser.add_argument('details', type=str, help='Please provide a message')
+    # parser.add_argument('Location',required=True,  type=float, help='Location not provided')
 
     # parser.add_argument('Media', type=str, help='Media not attached')
 

@@ -8,7 +8,7 @@ from flask_bcrypt import Bcrypt
 from flask_jwt_extended import JWTManager
 from dotenv import load_dotenv
 from resources.user import UserResources, LoginResource
-from resources.status_update import StatusUpdateResource
+from resources.status_update import ReportStatusUpdateResource
 from resources.report import ReportResource
 from resources.location import LocationResource
 
@@ -45,7 +45,8 @@ api.add_resource(UserResources, "/user", "/user/<int:id>")
 api.add_resource(LoginResource, "/login")
 api.add_resource(ReportResource, "/reports", "/reports/<int:report_id>")
 api.add_resource(LocationResource, "/locations", "/locations/<int:location_id>")
-api.add_resource(StatusUpdateResource, "/status_updates","/status_updates/<int:id>")
+api.add_resource(ReportStatusUpdateResource, '/admin/reports/<int:report_id>/status')
+
 
 if __name__ == "__main__":
     app.run(debug=True)

@@ -17,9 +17,7 @@ metadata = MetaData(naming_convention=naming_convention)
 db = SQLAlchemy(metadata=metadata)
 
 
-# ------------------------------
-# User Model
-# ------------------------------
+
 class User(db.Model, SerializerMixin):
     __tablename__ = "users"
     serialize_rules = ("-reports", "-emergency_contacts", "-password")
@@ -30,7 +28,10 @@ class User(db.Model, SerializerMixin):
     email = db.Column(db.String, unique=True, nullable=False)
     password = db.Column(db.VARCHAR, nullable=True)
     phone_number = db.Column(db.String, unique=True, nullable=False)
+
     created_at = db.Column(db.TIMESTAMP)
+    
+    role = db.Column(db.String, default="user") 
 
     reports = db.relationship("Report", back_populates="user", cascade="all, delete")
 
@@ -45,7 +46,7 @@ class Report(db.Model, SerializerMixin):
     id = db.Column(db.Integer, primary_key=True)
     user_id = db.Column(db.Integer, db.ForeignKey("users.id"), nullable=False)
     incident = db.Column(db.String, nullable=False)
-    message = db.Column(db.Text, nullable=False)
+    details = db.Column(db.Text, nullable=False)
 
     user = db.relationship("User", back_populates="reports")
 

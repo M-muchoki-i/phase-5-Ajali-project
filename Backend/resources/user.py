@@ -12,7 +12,7 @@ class UserResources(Resource):
     parser.add_argument("last_name", type=str, required=True, help="last_name is required")
     parser.add_argument("email", type=str, required=True, help="Email is required")
     parser.add_argument("password", type=str, required=True)
-    # parser.add_argument("role", type=str, required=False)
+    parser.add_argument("role", type=str, required=False)
     parser.add_argument("phone_number", type=str, required=True, help="phone_number is required")
 
     def get(self,id=None):
@@ -90,8 +90,8 @@ class LoginResource(Resource):
             return{"message":"incorrect email address or password"}, 401
 
         if check_password_hash(user.password,data['password']):
-            access_token=create_access_token( identity=(user.id))
-            # For hashed passwords:
+            access_token=create_access_token( identity=(user.id), additional_claims={"name": user.name, "role": user.role})
+            # For hashed passwords
             # if not user or not check_password_hash(user.password, data["password"]):
             return {"message": "Login successful", "user":user.to_dict(), "acess_token": access_token}, 200
         else:

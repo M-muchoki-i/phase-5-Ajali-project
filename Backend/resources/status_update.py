@@ -1,59 +1,53 @@
-from flask import request
+
 from flask_restful import Resource
-from models import db, StatusUpdate
-#from models.status_update import StatusUpdate
+from flask import request
 from datetime import datetime
-# from flask_jwt_extended import jwt_required
+from flask_jwt_extended import jwt_required, get_jwt_identity
+from models import db, Report, StatusUpdate, User 
 
+class ReportStatusUpdateResource(Resource):
 
+    @jwt_required()
+    def post(self, report_id):
+        # Get current user identity from JWT token
+        current_user_id = get_jwt_identity()
+        user = User.query.get(current_user_id)
 
-class  StatusUpdateResource(Resource):
+        # Check if user exists and is admin
+        if not user or not user.is_admin:
+            return {"error": "Admin access required"}, 403
 
-    def get(self, id=None):
-        if id :
-            status_updates = StatusUpdate.query.get(id)
-            if not status_updates:
-                return {"error": "Status update not found"}, 404
-            return status_updates.to_dict(), 200
-        else:
-            status_updates = StatusUpdate.query.all()
-            return [s.to_dict() for s in status_updates], 200
-
-    def post(self):
+        # Parse request data
         data = request.get_json()
+        new_status = data.get('status')
+        updated_by = data.get('updated_by')
+
+        # Validate status
+        if new_status not in ['under investigation', 'rejected', 'resolved']:
+            return {"error": "Invalid status"}, 400
+
+        # Admin username must be provided - you can decide if you want to fetch it from the user instead
+        if not updated_by:
+            return {"error": "updated_by is required"}, 400
+
+        # Validate report exists
+        report = Report.query.get(report_id)
+        if not report:
+            return {"error": "Report not found"}, 404
 
         try:
-            new_status_update = StatusUpdate(
-                report_id=data["report_id"],
-                updated_by=data["updated_by"],
-                status=data["status"],
+            # Create new StatusUpdate with the given data
+            status_update = StatusUpdate(
+                report_id=report_id,
+                updated_by=updated_by,
+                status=new_status,
                 timestamp=datetime.utcnow()
             )
-            db.session.add(new_status_update)
+            db.session.add(status_update)
             db.session.commit()
-            return new_status_update.to_dict(), 201
+            return {"message": f"Report status updated to '{new_status}'"}, 200
+
         except Exception as e:
             return {"error": str(e)}, 400
 
-    def patch(self, id):
-        status_update = StatusUpdate.query.get(id)
-        if not status_update:
-            return {"error": "Status update not found"}, 404
 
-        data = request.get_json()
-        if "status" in data:
-            status_update.status = data["status"]
-        if "timestamp" in data:
-            status_update.timestamp = datetime.utcnow()
-
-        db.session.commit()
-        return status_update.to_dict(), 200
-
-    def delete(self, id):
-        status_update = StatusUpdate.query.get(id)
-        if not status_update:
-            return {"error": "Status update not found"}, 404
-
-        db.session.delete(status_update)
-        db.session.commit()
-        return {}, 204
