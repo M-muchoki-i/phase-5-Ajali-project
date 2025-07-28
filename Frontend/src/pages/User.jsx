@@ -46,14 +46,14 @@ export function User() {
     }
   };
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gray-50 px-4">
-      <div className="max-w-md w-full p-10 bg-white rounded-xl shadow-xl space-y-6">
+    <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-gray-950 via-blue-950 to-red-950 font-inter text-white relative overflow-hidden p-4 sm:p-6 lg:p-8">
+      <div className="relative z-10 max-w-md w-full p-8 sm:p-10 bg-white/5 backdrop-blur-xl rounded-2xl border border-white/10 shadow-2xl space-y-6 animate-fade-in">
         <div className="text-center">
           <h2 className="text-3xl font-bold text-green-700 mb-2">
-            Welcome back!
+            Welcome to Ajali!
           </h2>
           <p className="text-sm text-gray-500">
-            Enter to get unlimited access to data & information.
+            Sign-up to report an emergency instantly!
           </p>
         </div>
 
@@ -73,9 +73,9 @@ export function User() {
           <div>
             <label
               htmlFor=" firstname"
-              className="block text-sm font-medium text-gray-700 mb-1"
+              className="block text-sm font-medium text-white/80 mb-1"
             >
-              firstName <span className="text-red-500">*</span>
+              First Name <span className="text-red-500">*</span>
             </label>
             <input
               type="text"
@@ -83,15 +83,15 @@ export function User() {
               value={firstName}
               onChange={(e) => setfirstName(e.target.value)}
               required
-              className="w-full px-4 py-3 border border-gray-300 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-green-500"
+              className="w-full px-4 py-3 bg-white/10 border border-white/20 rounded-lg shadow-inner text-white placeholder-white/50 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all duration-200"
             />
           </div>
           <div>
             <label
               htmlFor=" firstname"
-              className="block text-sm font-medium text-gray-700 mb-1"
+              className="block text-sm font-medium text-white/80 mb-1"
             >
-               lastName <span className="text-red-500">*</span>
+               Last Name <span className="text-red-500">*</span>
             </label>
             <input
               type="text"
@@ -99,13 +99,13 @@ export function User() {
               value={lastName}
               onChange={(e) => setlastName(e.target.value)}
               required
-              className="w-full px-4 py-3 border border-gray-300 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-green-500"
+              className="w-full px-4 py-3 bg-white/10 border border-white/20 rounded-lg shadow-inner text-white placeholder-white/50 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all duration-200"
             />
           </div>
           <div>
             <label
               htmlFor="email"
-              className="block text-sm font-medium text-gray-700 mb-1"
+              className="block text-sm font-medium text-white/80 mb-1"
             >
               Email <span className="text-red-500">*</span>
             </label>
@@ -115,13 +115,13 @@ export function User() {
               value={email}
               onChange={(e) => setEmail(e.target.value)}
               required
-              className="w-full px-4 py-3 border border-gray-300 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-green-500"
+              className="w-full px-4 py-3 bg-white/10 border border-white/20 rounded-lg shadow-inner text-white placeholder-white/50 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all duration-200"
             />
           </div>
           <div>
             <label
               htmlFor="password"
-              className="block text-sm font-medium text-gray-700 mb-1"
+              className="block text-sm font-medium text-white/80 mb-1"
             >
               Password <span className="text-red-500">*</span>
             </label>
@@ -131,16 +131,16 @@ export function User() {
               value={password}
               onChange={(e) => setPassword(e.target.value)}
               required
-              className="w-full px-4 py-3 border border-gray-300 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-green-500"
+              className="w-full px-4 py-3 bg-white/10 border border-white/20 rounded-lg shadow-inner text-white placeholder-white/50 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all duration-200"
             />
           </div>
 
           <div>
             <label
               htmlFor="phone number"
-              className="block text-sm font-medium text-gray-700 mb-1"
+              className="block text-sm font-medium text-white/80 mb-1"
             >
-              PhoneNumber <span className="text-red-500">*</span>
+              Phone Number <span className="text-red-500">*</span>
             </label>
             <input
               type="text"
@@ -148,13 +148,13 @@ export function User() {
               value={PhoneNumber}
               onChange={(e) => setPhoneNumber(e.target.value)}
               required
-              className="w-full px-4 py-3 border border-gray-300 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-green-500"
+              className="w-full px-4 py-3 bg-white/10 border border-white/20 rounded-lg shadow-inner text-white placeholder-white/50 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all duration-200"
             />
           </div>
 
           <button
             type="submit"
-            className="w-full py-3 bg-green-600 hover:bg-green-700 text-white font-semibold rounded-lg transition duration-200"
+            className="w-full py-3 bg-green-600 hover:bg-red-700 text-white font-semibold rounded-lg transition duration-200"
           >
             Sign Up
           </button>
