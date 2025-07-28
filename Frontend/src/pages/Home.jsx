@@ -10,8 +10,13 @@ const Index = () => {
  
 
   const handleContactUs = () => {
+
+    // Contact functionality would go here
+    console.log("Contact us clicked");
+
     // Contact functionality will go here
     // console.log("Contact us clicked");
+
   };
 
     return (
