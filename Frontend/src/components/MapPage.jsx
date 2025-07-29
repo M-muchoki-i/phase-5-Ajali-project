@@ -3,6 +3,7 @@ import { MapContainer, TileLayer, Marker, Popup, useMapEvents } from "react-leaf
 import "leaflet/dist/leaflet.css";
 import L ,{ latLng } from 'leaflet'
 import { useNavigate } from "react-router-dom";
+import ReportForm from "../pages/report-form";
 
 // Fix for default marker icons in Leaflet
 // Leaflet(map library) will not work without this in place DO NOT REMOVE!!!
@@ -21,6 +22,7 @@ export default function MapPage() {
     const [locationSelected, setLocationSelected] = useState(false);
     const [isLocating, setIsLocating] = useState(false);
     const [locationError, setLocationError] = useState(null);
+    const [locationData, setLocationData] = useState({latitude:'', longitude:'',})
 
 
     //we need to create a function to trigger location finding
@@ -31,9 +33,9 @@ export default function MapPage() {
         if (navigator.geolocation) {
             navigator.geolocation.getCurrentPosition(
                 (position) => {
-                    const lat = position.coords.latitude;
-                    const lng = position.coords.longitude;
-                    setPosition({ latitude: lat, longitude: lng });
+                    const latitude = position.coords.latitude;
+                    const longitude = position.coords.longitude;
+                    setPosition({ lat: latitude, lng: longitude });
                     setIsLocating(false);
                 },
                 (err) => {
@@ -48,8 +50,12 @@ export default function MapPage() {
     };
 
     const handleLocationFound = (e) => {
-        const newPosition = e.latLng;
+        const newPosition = e.latLng || e.latlng;
         setPosition(newPosition);
+        setLocationData({
+            latitude: newPosition.lat.toString(),
+            longitude: newPosition.lng.toString(),
+        })
         setLocationSelected(true);
         setIsLocating(false);
         mapRef.current.flyTo(newPosition, 16);
@@ -74,7 +80,7 @@ export default function MapPage() {
                 </div>
                 <main className="flex-1 flex items-center justify-center p-4">
                     {/* The giant floating card container for the map and its controls */}
-                    <div className="relative z-10 bg-white/5 backdrop-blur-xl rounded-2xl border border-white/10 shadow-2xl p-6 flex flex-col max-w-5xl w-full h-full max-h-[90vh] overflow-y-auto">
+                    <div className="relative z-10 bg-white/5 backdrop-blur-xl rounded-2xl border border-white/10 shadow-2xl p-6 flex flex-col w-[95vw] h-[95vh] overflow-y-auto">
 
                         {/* Header/Control Panel - Glassy and prominent, now inside the card */}
                         <div className="p-2 bg-white/5 backdrop-blur-lg border border-white/10 rounded-xl shadow-md flex flex-shrink-0 justify-between items-center mb-2"> {/* Added margin-bottom */}
@@ -103,33 +109,36 @@ export default function MapPage() {
                         </div>
 
                         {/* Map Container - now takes full height/width of its parent card */}
-                        <MapContainer
-                            center={position || [0, 0]} // Default to 0,0 if no position, LocationMarker will try to find user's
-                            zoom={2} // Start with a lower zoom to show more of the world
-                             // Fill parent card
-                            whenCreated={(map) => (mapRef.current = map)}
-                            className="z-0 flex-grow rounded-lg overflow-hidden min-h-[500px]" // Added rounded-lg to map itself
-                        >
-                            <TileLayer
-                                url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
-                                attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
-                            />
-                            <LocationEvents
-                                onLocationFound={handleLocationFound}
-                                onLocationError={(e) => {
-                                    setLocationError(e.message);
-                                    setIsLocating(false);
-                                }}
-                            />
-                            {position && (
-                                <Marker position={position}>
-                                    <Popup className="font-semibold text-gray-800 text-base">
-                                        {locationSelected ? "Selected location" : "Your current location"}
-                                    </Popup>
-                                </Marker>
-                            )}
-                        </MapContainer>
+                        <div className="flex flex-row gap-4 w-full">
+                            <MapContainer
+                                center={position || [0, 0]} // Default to 0,0 if no position, LocationMarker will try to find user's
+                                zoom={2} // Start with a lower zoom to show more of the world
+                                // Fill parent card
+                                whenCreated={(map) => (mapRef.current = map)}
+                                className="z-0 flex flex-auto rounded-lg overflow-hidden min-h-[500px] w-full md:w-2/3 lg:w-3/4" // Added rounded-lg to map itself
+                            >
+                                <TileLayer
+                                    url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
+                                    attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
+                                />
+                                <LocationEvents
+                                    onLocationFound={handleLocationFound}
+                                    onLocationError={(e) => {
+                                        setLocationError(e.message);
+                                        setIsLocating(false);
+                                    }}
+                                />
+                                {position && (
+                                    <Marker position={position}>
+                                        <Popup className="font-semibold text-gray-800 text-base">
+                                            {locationSelected ? "Selected location" : "Your current location"}
+                                        </Popup>
+                                    </Marker>
+                                )}
+                            </MapContainer>
 
+                            <ReportForm locationData={locationData} setLocationData={setLocationData} className="w-full md:w-1/3 lg:w-1/4"/>
+                        </div>
                         {/* Coordinate Display Box - Glassy and subtle, now inside the card */}
                         {locationError && (
                             <div className="p-4 mt-4 bg-red-500/10 backdrop-blur-lg border border-red-500/20 rounded-xl text-red-300">
