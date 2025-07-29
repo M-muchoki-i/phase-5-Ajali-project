@@ -1,17 +1,26 @@
 import { useState } from "react";
-import { Link } from "react-router-dom";
+import { useAuth } from "../components/AuthContext";
+import { Link, useNavigate } from "react-router-dom";
+
 
 export function Login() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [message, setMessage] = useState(null);
+  const API_BASE_URL = "http://127.0.0.1:5000";
+  const { setUser } = useAuth();
+  const navigate = useNavigate();
 
   const handleLogin = async (e) => {
     e.preventDefault();
     setMessage(null);
 
     try {
+
+      const res = await fetch(`${API_BASE_URL}/login`, {
+
       const res = await fetch("http://127.0.0.1:5000/login", {
+
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ email, password }),
@@ -20,9 +29,12 @@ export function Login() {
       const data = await res.json();
 
       if (res.ok) {
+        localStorage.setItem("access_token", data.access_token);
+        localStorage.setItem("user", JSON.stringify(data.user));
+
+        setUser(data.user); // update AuthContext
         setMessage({ type: "success", text: "Login successful!" });
-        // Store token or redirect if needed
-        localStorage.setItem("token", data.token);
+        navigate("/Home");
       } else {
         setMessage({ type: "error", text: data.error || "Login failed" });
       }

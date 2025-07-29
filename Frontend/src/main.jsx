@@ -14,6 +14,7 @@ import { StrictMode } from "react";
 import { createRoot } from "react-dom/client";
 import { createBrowserRouter, RouterProvider } from "react-router-dom";
 import "./index.css";
+import { AuthProvider } from "./components/AuthContext.jsx";
 // pages imports
 import Index from './pages/Home.jsx';
 import MapPage from "./components/MapPage.jsx";
@@ -24,6 +25,7 @@ import { User } from "./pages/User.jsx";
 import { Login } from "./pages/Login.jsx";
 import ReportForm from "./pages/report-form.jsx";
 import MainLayout from "./MainLayout.jsx"; // ensures the pages are wrapped  to include the fixed footer and bottom padding.
+
 
 
 const router = createBrowserRouter([
@@ -108,6 +110,8 @@ const router = createBrowserRouter([
 
 createRoot(document.getElementById("root")).render(
   <StrictMode>
-    <RouterProvider router={router} />
+    <AuthProvider>
+      <RouterProvider router={router} />
+    </AuthProvider>
   </StrictMode>
 );

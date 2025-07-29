@@ -2,27 +2,28 @@ import { useState } from "react";
 import { Link } from "react-router-dom";
 
 export function User() {
-  const [firstName, setfirstName] = useState("");
-  const [lastName, setlastName] = useState("");
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
-  const [PhoneNumber, setPhoneNumber] = useState("");
+  const [first_name, setfirst_name] = useState("");
+  const [last_name, setlast_name] = useState("");
+  const [email, setemail] = useState("");
+  const [password, setpassword] = useState("");
+  const [phone_number, setphone_number] = useState("");
   const [message, setMessage] = useState(null);
+  const API_BASE_URL = "http://127.0.0.1:5000";
 
   const handleSignup = async (e) => {
     e.preventDefault();
     setMessage(null);
 
     try {
-      const res = await fetch(`${" http://127.0.0.1:5000"}/user`, {
+      const res = await fetch(`${API_BASE_URL}/user`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
-          firstName,
-          lastName,
+          first_name,
+          last_name,
           email,
           password,
-          PhoneNumber: PhoneNumber,
+          phone_number: phone_number,
         }),
       });
 
@@ -33,11 +34,11 @@ export function User() {
           type: "success",
           text: "Signup successful! Please login.",
         });
-        setlastName("");
-        setfirstName("");
-        setEmail("");
-        setPassword("");
-        setPhoneNumber("");
+        setlast_name("");
+        setfirst_name("");
+        setemail("");
+        setpassword("");
+        setphone_number("");
       } else {
         setMessage({ type: "error", text: data.error || "Signup failed" });
       }
@@ -80,24 +81,24 @@ export function User() {
             <input
               type="text"
               placeholder=" firstName"
-              value={firstName}
-              onChange={(e) => setfirstName(e.target.value)}
+              value={first_name}
+              onChange={(e) => setfirst_name(e.target.value)}
               required
               className="w-full px-4 py-3 bg-white/10 border border-white/20 rounded-lg shadow-inner text-white placeholder-white/50 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all duration-200"
             />
           </div>
           <div>
             <label
-              htmlFor=" firstname"
+              htmlFor=" first_name"
               className="block text-sm font-medium text-white/80 mb-1"
             >
-               Last Name <span className="text-red-500">*</span>
+               Last_name <span className="text-red-500">*</span>
             </label>
             <input
               type="text"
               placeholder=" lastName"
-              value={lastName}
-              onChange={(e) => setlastName(e.target.value)}
+              value={last_name}
+              onChange={(e) => setlast_name(e.target.value)}
               required
               className="w-full px-4 py-3 bg-white/10 border border-white/20 rounded-lg shadow-inner text-white placeholder-white/50 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all duration-200"
             />
@@ -107,13 +108,13 @@ export function User() {
               htmlFor="email"
               className="block text-sm font-medium text-white/80 mb-1"
             >
-              Email <span className="text-red-500">*</span>
+              email <span className="text-red-500">*</span>
             </label>
             <input
               type="email"
               placeholder="Email"
               value={email}
-              onChange={(e) => setEmail(e.target.value)}
+              onChange={(e) => setemail(e.target.value)}
               required
               className="w-full px-4 py-3 bg-white/10 border border-white/20 rounded-lg shadow-inner text-white placeholder-white/50 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all duration-200"
             />
@@ -129,7 +130,7 @@ export function User() {
               type="password"
               placeholder="Password"
               value={password}
-              onChange={(e) => setPassword(e.target.value)}
+              onChange={(e) => setpassword(e.target.value)}
               required
               className="w-full px-4 py-3 bg-white/10 border border-white/20 rounded-lg shadow-inner text-white placeholder-white/50 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all duration-200"
             />
@@ -145,8 +146,8 @@ export function User() {
             <input
               type="text"
               placeholder="Phone Number"
-              value={PhoneNumber}
-              onChange={(e) => setPhoneNumber(e.target.value)}
+              value={phone_number}
+              onChange={(e) => setphone_number(e.target.value)}
               required
               className="w-full px-4 py-3 bg-white/10 border border-white/20 rounded-lg shadow-inner text-white placeholder-white/50 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all duration-200"
             />
