@@ -9,7 +9,8 @@ import EmergencyContact from "./pages/emergencycontacts.jsx";
 import { User } from "./pages/User.jsx";
 import { Login } from "./pages/Login.jsx";
 import ReportForm from "./pages/report-form.jsx";
-import MainLayout from "./pages/MainLayout.jsx"; // ensures the pages are wrapped  to include the fixed footer and bottom padding.
+import MainLayout from "./layouts/MainLayout.jsx";
+ // ensures the pages are wrapped  to include the fixed footer and bottom padding.
 
 const router = createBrowserRouter([
   {
