@@ -50,15 +50,39 @@ export default function MapPage() {
     };
 
     const handleLocationFound = (e) => {
-        const newPosition = e.latLng || e.latlng;
-        setPosition(newPosition);
-        setLocationData({
-            latitude: newPosition.lat.toString(),
-            longitude: newPosition.lng.toString(),
-        })
-        setLocationSelected(true);
-        setIsLocating(false);
-        mapRef.current.flyTo(newPosition, 16);
+        try {
+            const latLng = e.latLng || e.latlng;
+            if (!latLng || typeof latLng.lat !== 'number' || typeof latLng.lng !== 'number') {
+                console.error('Invalid location data!', latLng);
+                setLocationError('Coordinates received are invalid');
+                return;
+            }
+            //create a position object
+            const newPosition = {
+                lat: latLng.lat,
+                lng: latLng.lng
+            };
+            //update state from here
+            setPosition(newPosition);
+            setLocationData({
+                latitude: newPosition.lat.toString(),
+                longitude: newPosition.lng.toString(),
+            });
+            setLocationSelected(true);
+            setIsLocating(false);
+
+            //correction, flyto uses array format for coords
+            if (mapRef.current && mapRef.current.flyTo && typeof mapRef.current.flyTo === 'function') {
+                //coordinates as an array
+                mapRef.current.flyTo([newPosition.lat, newPosition.lng], 16);                
+            } else {
+                console.warn('Map reference not available');
+            }
+        } catch (error) {
+            console.error('Error in handleLocationFound:', error);
+            setLocationError('Failed to process location data');
+        }
+        
     };
 
     const handleButtonClick = () => {
@@ -121,6 +145,7 @@ export default function MapPage() {
                                     url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
                                     attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
                                 />
+                                < DetectClick onLocationClick={handleLocationFound} />
                                 <LocationEvents
                                     onLocationFound={handleLocationFound}
                                     onLocationError={(e) => {
@@ -211,3 +236,14 @@ function LocationEvents({onLocationFound, onLocationError }) {
     return null;
     
 };
+
+function DetectClick({ onLocationClick }) {
+    useMapEvents({
+        click: (e) => {
+            onLocationClick({
+                latlng: e.latlng,
+                bounds: e.bounds
+            });
+        }
+    })
+}
