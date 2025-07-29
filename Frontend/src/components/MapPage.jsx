@@ -180,7 +180,7 @@ export default function MapPage() {
                 </main>
 
                 {/*to add a fixed button at page bottom*/}
-                <div className="fixed bottom-0 left-0 right-0 flex justify-center p-4 z-20">
+                {/* <div className="fixed bottom-0 left-0 right-0 flex justify-center p-4 z-20">
                     <button
                         onClick={handleButtonClick}
                         disabled={isLocating}
@@ -204,7 +204,7 @@ export default function MapPage() {
                                     <span>Select Location</span>
                                 </>  
                     )}</button>
-                </div>
+                </div> */}
                 
             </div>
         </>

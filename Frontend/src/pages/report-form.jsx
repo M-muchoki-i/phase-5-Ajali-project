@@ -163,14 +163,14 @@ export default function ReportForm({locationData, setLocationData}) {
               />
             </div>
             <div className="w-4"></div>
-            <button
+            {/* <button
               type="button"
               className="shrink-0 py-3 px-6 bg-red-500 text-white font-medium rounded-full
                             hover:bg-red-600 focus:outline-none focus:ring-2 focus:ring-red-500 
                             focus:ring-offset-2 shadow-sm transition-all"
             >
               Get location
-            </button>
+            </button> */}
           </div>
 
           <h3 className="text-xl mt-4 font-bold text-red-700 mb-2">
