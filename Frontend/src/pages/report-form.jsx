@@ -7,9 +7,12 @@ import { useSearchParams } from "react-router-dom";
 export default function ReportForm({locationData, setLocationData}) {
   // State for form data
   const [searchParams] = useSearchParams(); //using url params to pass location when navigating
+   const API_BASE_URL = "http://127.0.0.1:5000";
   const [formData, setFormData] = useState({
     incident: "",
     details: "",
+    latitude:"",
+    longitude:"",
     media: [],
   });
 
@@ -25,7 +28,7 @@ export default function ReportForm({locationData, setLocationData}) {
   // Handle location changes
   const handleLocationChange = (e) => {
     const { name, value } = e.target;
-    setLocationData((prev) => ({
+    setformData((prev) => ({
       ...prev,
       [name]: value,
     }));
@@ -60,31 +63,30 @@ export default function ReportForm({locationData, setLocationData}) {
     const dataToSend = new FormData();
     dataToSend.append("incident", formData.incident);
     dataToSend.append("details", formData.details);
-    formData.media.forEach((file, index) => {
-      dataToSend.append(`media[${index}]`, file);
-    });
-    dataToSend.append("latitude", locationData.latitude);
-    dataToSend.append("longitude", locationData.longitude);
+    // formData.media.forEach((file, index) => {
+    //   dataToSend.append(`media[${index}]`, file);
+    // });
+    dataToSend.append("latitude", formData.latitude);
+    dataToSend.append("longitude", formData.longitude);
 
     try {
-      const response = await axios.post(
-        "http://127.0.0.1:5000/reports",
-        dataToSend
-      );
+      const response = await axios.post(`${API_BASE_URL}/reports`, dataToSend);
       console.log(response.data);
 
       // Reset form state
       setFormData({
         incident: "",
         details: "",
+        latitude: "",
+        longitude: "",
         media: [],
       });
 
       // Reset location state
-      setLocationData({
-        latitude: "",
-        longitude: "",
-      });
+      // setLocationData({
+      //   latitude: "",
+      //   longitude: "",
+      // });
 
       // Clear file input
       if (fileInputRef.current) {
@@ -99,7 +101,7 @@ export default function ReportForm({locationData, setLocationData}) {
     const lat = searchParams.get("lat");
     const lng = searchParams.get("lng");
     if (lat && lng) {
-      setLocationData({ latitude: lat, longitude: lng });
+      setformData({ latitude: lat, longitude: lng });
     }
   }, [searchParams]);
 
