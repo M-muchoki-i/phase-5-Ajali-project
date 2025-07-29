@@ -1,132 +1,103 @@
+import { useForm } from "react-hook-form";
+import { toast, ToastContainer } from "react-toastify";
+// import "react-toastify/dist/ReactToastify.css";
 
-import { useEffect } from "react";
-import { useFormik } from "formik";
-import * as Yup from "yup";
-import { useNavigate } from "react-router-dom";
-import { toast } from "react-toastify";
+export function UpdateReportStatus({ reportId, access_token }) {
+  const {
+    register,
+    handleSubmit,
+    reset,
+    formState: { errors },
+  } = useForm();
 
-function ReportForm({ report, user }) {
-  const navigate = useNavigate();
+  const statuses = ["under investigation", "rejected", "resolved"];
 
-  useEffect(() => {
-    if (!report) {
-      toast.error("No report data found. Redirecting...");
-      navigate("/reports");
-    }
-  }, [report, navigate]);
-
-  const formik = useFormik({
-    initialValues: {
-      incident: report?.incident || "",
-      message: report?.message || "",
-      user_id: user?.id || "",
-      report_id: report?.id || "",
-      status: "pending", // example additional status field if needed
-    },
-    validationSchema: Yup.object({
-      user_id: Yup.number().required("User ID is required"),
-      report_id: Yup.number().required("Report ID is required"),
-      status: Yup.string().required("Status is required"),
-    }),
-    onSubmit: async (values, { resetForm }) => {
-      try {
-        const res = await fetch(
-          `/"http://localhost:5000"/status_updates/${values.report_id}/status_updates`,
-          {
-            method: "POST",
-            headers: {
-              "Content-Type": "application/json",
-            },
-            body: JSON.stringify(values),
-          }
-        );
-
-        const data = await res.json();
-
-        if (res.ok) {
-          toast.success("Status update submitted!");
-          resetForm();
-          navigate("/reports");
-        } else {
-          toast.error(`Failed: ${data.message || "Unknown error"}`);
+  const onSubmit = async (data) => {
+    try {
+      const response = await fetch(
+        `http://127.0.0.1:5000/admin/reports/${reportId}/status`,
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${access_token}`,
+          },
+          body: JSON.stringify({
+            status: data.status,
+            updated_by: "", // or omit if backend uses JWT user info
+          }),
         }
-      } catch (err) {
-        console.error(err);
-        toast.error("Server error. Please try again.");
-      }
-    },
-  });
+      );
 
-  if (!report || !user) return <p>Loading...</p>;
+      const result = await response.json();
+
+      if (response.ok) {
+        toast.success(result.message || "Status updated successfully");
+        reset();
+      } else {
+        toast.error(result.error || "Failed to update status");
+      }
+    } catch (error) {
+      toast.error("Network error: " + error.message);
+    }
+  };
 
   return (
-    <div className="max-w-lg mx-auto bg-white shadow p-6 rounded-lg space-y-6">
-      <h2 className="text-2xl font-bold text-center text-blue-600">
-        Report Status Update
-      </h2>
-
-      <form onSubmit={formik.handleSubmit} className="space-y-4">
-        {/* Readonly Incident */}
-        <div>
-          <label className="block mb-1 font-semibold">Incident</label>
-          <input
-            type="text"
-            value={formik.values.incident}
-            readOnly
-            className="w-full border px-3 py-2 rounded bg-gray-100"
-          />
+    <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-gray-950 via-blue-950 to-red-950 font-inter text-white relative overflow-hidden p-4 sm:p-6 lg:p-8">
+      <div className="relative z-10 max-w-md w-full p-8 sm:p-10 bg-white/5 backdrop-blur-xl rounded-2xl border border-white/10 shadow-2xl space-y-6 animate-fade-in">
+        <div className="text-center">
+          <h3 className="text-xl font-semibold mb-4text-black">
+            Update Status for Report ID:{" "}
+            <span className="font-mono">{reportId}</span>
+          </h3>
         </div>
 
-        {/* Readonly Message */}
-        <div>
-          <label className="block mb-1 font-semibold">Message</label>
-          <textarea
-            value={formik.values.message}
-            readOnly
-            className="w-full border px-3 py-2 rounded bg-gray-100"
-          />
-        </div>
+        <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
+          <div>
+            <label
+              htmlFor="status"
+              className="block text-black font-medium mb-1"
+            >
+              Status:
+            </label>
+            <select
+              id="status"
+              {...register("status", { required: "Please select a status" })}
+              defaultValue=""
+              className={`w-full text-black p-3 border-2 border-gray-200 rounded-full bg-white 
+                        focus:border-red-400 focus:ring-2 focus:ring-red-100 
+                        transition-all appearance-none cursor-pointer
+                        hover:border-red-300 ${
+                          errors.status ? "border-red-500" : "border-gray-300"
+                        }text-red`}
+            >
+              <option value="" disabled>
+                -- Select a status --
+              </option>
+              {statuses.map((s) => (
+                <option key={s} value={s}>
+                  {s}
+                </option>
+              ))}
+            </select>
+            {errors.status && (
+              <p className="mt-1 text-sm text-red-600">
+                {errors.status.message}
+              </p>
+            )}
+          </div>
 
-        {/* Hidden fields for submission */}
-        <input type="hidden" name="user_id" value={formik.values.user_id} />
-        <input type="hidden" name="report_id" value={formik.values.report_id} />
-        <input type="hidden" name="status" value={formik.values.status} />
+          <button
+            type="submit"
+            className="w-full bg-blue-600 hover:bg-blue-700 text-white font-semibold py-2 rounded transition-colors duration-200"
+          >
+            Update Status
+          </button>
+        </form>
 
-        {/* Example status input (if user can update status, else prefilled hidden) */}
-        <div>
-          <label className="block mb-1 font-semibold">Status</label>
-          <input
-            type="text"
-            name="status"
-            onChange={formik.handleChange}
-            onBlur={formik.handleBlur}
-            value={formik.values.status}
-            className="w-full border px-3 py-2 rounded"
-          />
-          {formik.touched.status && formik.errors.status ? (
-            <div className="text-red-600 text-sm">{formik.errors.status}</div>
-          ) : null}
-        </div>
-
-        <button
-          type="submit"
-          className="w-full bg-blue-600 text-white py-2 px-4 rounded hover:bg-blue-700"
-        >
-          Submit StatusUpdate
-        </button>
-      </form>
-
-      {/* Back Button */}
-      <div className="pt-4 text-center">
-        <button
-          onClick={() => navigate("/report")}
-          className="text-sm text-gray-600 underline hover:text-blue-700"
-        >
-          Back to report
-        </button>
+        {/* Container for toast notifications */}
+        <ToastContainer position="top-right" autoClose={3000} />
       </div>
     </div>
   );
 }
-
-export default ReportForm;

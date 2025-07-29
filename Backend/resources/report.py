@@ -6,8 +6,8 @@ from sqlalchemy.exc import SQLAlchemyError
 
 class ReportResource(Resource):
     parser = reqparse.RequestParser()
-    parser.add_argument('Incident', type=str, required=True, help='Incident type is required')
-    parser.add_argument('details', type=str, help='Please provide a message')
+    parser.add_argument('incident', type=str, required=True, help='incident type is required')
+    parser.add_argument('details', type=str, help='Please provide a detailed message')
     # parser.add_argument('Location',required=True,  type=float, help='Location not provided')
 
     # parser.add_argument('Media', type=str, help='Media not attached')
@@ -25,11 +25,15 @@ class ReportResource(Resource):
     def post(self):
 
         data = request.get_json()
+        args = self.parser.parse_args()
 
 
         try:
             report = Report(
-              message =  data["message"],    
+              user_id =data["user_id"],
+              incident=args['incident'],   
+              details=args.get('details')    
+
             )
             db.session.add(report)
             db.session.commit()
@@ -48,8 +52,12 @@ class ReportResource(Resource):
             return {"message": "Report not found"}, 404
         
         data = request.get_json()
-        if 'message' in data:
-            self.message = data['message']        
+        if 'user_id' in data:
+            report.user_id =data['user_id']
+        if 'details' in data:
+            report.details = data['details']  
+        if 'incident'   in data:
+            report.incident =data['incident']
         try:
             db.session.commit()
             return report.to_dict()

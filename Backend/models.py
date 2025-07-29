@@ -32,6 +32,9 @@ class User(db.Model, SerializerMixin):
     created_at = db.Column(db.TIMESTAMP)
     
     role = db.Column(db.String, default="user") 
+    @property
+    def is_admin(self):
+        return self.role == "admin"
 
     reports = db.relationship("Report", back_populates="user", cascade="all, delete")
 
@@ -47,12 +50,13 @@ class Report(db.Model, SerializerMixin):
     user_id = db.Column(db.Integer, db.ForeignKey("users.id"), nullable=False)
     incident = db.Column(db.String, nullable=False)
     details = db.Column(db.Text, nullable=False)
+    created_at = db.Column(db.TIMESTAMP)
 
     user = db.relationship("User", back_populates="reports")
 
     location = db.relationship( "Location", back_populates="report", uselist=False, cascade="all, delete" )
     media_attachments = db.relationship(  "MediaAttachment", back_populates="report", cascade="all, delete" )
-    created_at = db.Column(db.TIMESTAMP)
+  
     status_updates = db.relationship('StatusUpdate', back_populates='report', cascade='all, delete')
 
 

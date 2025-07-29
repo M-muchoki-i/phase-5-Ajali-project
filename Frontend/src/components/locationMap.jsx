@@ -1,10 +1,12 @@
 import "../App.css";
+import NavBar from "../pages/NavBar";
 
 import  { useState } from "react";
 // import "./App.css";
 
 
 const LocationSharePage = () => {
+  
   const [locationLink, setLocationLink] = useState("");
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
@@ -45,6 +47,7 @@ const LocationSharePage = () => {
 
   return (
     <div className="location-share-wrapper">
+      <NavBar />
       <h2>Emergency Location Sharing</h2>
       <p>
         If you’re in an accident or unsafe situation, send your live location

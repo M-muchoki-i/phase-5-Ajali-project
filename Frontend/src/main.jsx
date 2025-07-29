@@ -17,7 +17,7 @@ import "./index.css";
 // pages imports
 import Index from './pages/Home.jsx';
 import MapPage from "./components/MapPage.jsx";
-import StatusUpdate from './pages/status_update.jsx';
+import { UpdateReportStatus } from "./pages/status_update.jsx";
 import LocationPage from "./components/locationMap.jsx";
 import EmergencyContact from "./pages/emergencycontacts.jsx";
 import { User } from "./pages/User.jsx";
@@ -41,23 +41,31 @@ const router = createBrowserRouter([
   },
   {
     path: "/emergency-contact",
-    element: <EmergencyContact />,
+    element: (
+      <MainLayout>
+        <EmergencyContact />
+      </MainLayout>
+    ),
   },
   {
     path: "/share-location",
-    element: <LocationPage />,
+    element: (
+      <MainLayout>
+        <LocationPage />
+      </MainLayout>
+    ),
   },
   // {
   //   path: "/user",
   //   element: <User />,
   // },
   {
-    path: "/status-update",
-    element: <StatusUpdate />,
+    path: "/UpdateReportStatus",
+    element:   <MainLayout><UpdateReportStatus /></MainLayout> 
   },
   {
     path: "/",
-    element: <Index/>
+    element: <Index />,
     // element: (
     //   <MainLayout>
     //     <Login />
@@ -95,7 +103,6 @@ const router = createBrowserRouter([
         <MapPage />
       </MainLayout>
     ),
-
   },
 ]);
 

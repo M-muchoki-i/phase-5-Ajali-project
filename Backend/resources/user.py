@@ -90,7 +90,7 @@ class LoginResource(Resource):
             return{"message":"incorrect email address or password"}, 401
 
         if check_password_hash(user.password,data['password']):
-            access_token=create_access_token( identity=(user.id), additional_claims={"name": user.name, "role": user.role})
+            access_token=create_access_token( identity=str(user.id), additional_claims={"name": user.first_name, "role": user.role})
             # For hashed passwords
             # if not user or not check_password_hash(user.password, data["password"]):
             return {"message": "Login successful", "user":user.to_dict(), "acess_token": access_token}, 200

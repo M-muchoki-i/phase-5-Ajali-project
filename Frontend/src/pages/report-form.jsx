@@ -2,7 +2,7 @@ import { useState, useRef, useEffect } from "react";
 import axios from "axios";
 import { useSearchParams } from "react-router-dom";
 
-const backendURL = "http://localhost:5000";
+// const backendURL = "http://localhost:5000";
 
 export default function ReportForm({locationData, setLocationData}) {
   // State for form data
@@ -14,10 +14,17 @@ export default function ReportForm({locationData, setLocationData}) {
   });
 
   // initialize location data from url params
+
+  const [locationData, setLocationData] = useState({
+    latitude: searchParams.get("lat") || "",
+    longitude: searchParams.get("lng") || "",
+  });
+
   // const [locationData, setLocationData] = useState({
   //   latitude: searchParams.get("lat") || "",
   //   longitude: searchParams.get("lng") || "",
   // });
+
 
   // Ref for file input
   const fileInputRef = useRef(null);
@@ -68,7 +75,11 @@ export default function ReportForm({locationData, setLocationData}) {
 
     try {
       const response = await axios.post(
+
+        "http://127.0.0.1:5000/reports",
+
         `${backendURL}/reports`,
+
         dataToSend
       );
       console.log(response.data);
@@ -98,7 +109,13 @@ export default function ReportForm({locationData, setLocationData}) {
   useEffect(() => {
     const lat = searchParams.get("lat");
     const lng = searchParams.get("lng");
+
+    if (lat && lng) {
+      setLocationData({ latitude: lat, longitude: lng });
+    }
+
     if (lat && lng) { setLocationData({ latitude: lat, longitude: lng }); }
+
   }, [searchParams]);
 
   return (
