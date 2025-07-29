@@ -4,7 +4,7 @@ import { useSearchParams } from "react-router-dom";
 
 const backendURL = "http://localhost:5000";
 
-export default function ReportForm() {
+export default function ReportForm({locationData, setLocationData}) {
   // State for form data
   const [searchParams] = useSearchParams(); //using url params to pass location when navigating
   const [formData, setFormData] = useState({
@@ -14,10 +14,10 @@ export default function ReportForm() {
   });
 
   // initialize location data from url params
-  const [locationData, setLocationData] = useState({
-    latitude: searchParams.get("lat") || "",
-    longitude: searchParams.get("lng") || "",
-  });
+  // const [locationData, setLocationData] = useState({
+  //   latitude: searchParams.get("lat") || "",
+  //   longitude: searchParams.get("lng") || "",
+  // });
 
   // Ref for file input
   const fileInputRef = useRef(null);
@@ -102,7 +102,7 @@ export default function ReportForm() {
   }, [searchParams]);
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-gray-950 via-blue-950 to-red-950 font-inter text-white relative overflow-hidden p-4 sm:p-6 lg:p-8">
+    <div>
       <div className="max-w-md mx-auto p-6 bg-red-50/60 rounded-2xl border border-red-100 shadow-lg">
         <h2 className="text-3xl font-bold text-red-800 mb-6 ml-12">
           Report an emergency
@@ -149,7 +149,7 @@ export default function ReportForm() {
                 name="longitude"
                 className="flex-1 min-w-0 p-4 text-center focus:outline-none border-none bg-transparent"
                 placeholder="Longitude"
-                value={locationData.longitude}
+                value={locationData?.longitude || ""}
                 onChange={handleLocationChange}
               />
               <div className="border-l border-gray-300 h-8 self-center"></div>
@@ -158,7 +158,7 @@ export default function ReportForm() {
                 name="latitude"
                 className="flex-1 min-w-0 p-4 text-center focus:outline-none border-none bg-transparent"
                 placeholder="Latitude"
-                value={locationData.latitude}
+                value={locationData?.latitude || ""}
                 onChange={handleLocationChange}
               />
             </div>
