@@ -28,13 +28,22 @@ export default function MapPage() {
         setIsLocating(true);
         setLocationError(null);
         //this triggers map.locate() in location marker when mounted
-        if (mapRef.current) {
-            mapRef.current.locate({
-                setView: true,
-                maxZoom: 16,
-                timeout: 10000,
-                enableHighAccuracy: true
-            });
+        if (navigator.geolocation) {
+            navigator.geolocation.getCurrentPosition(
+                (position) => {
+                    const lat = position.coords.latitude;
+                    const lng = position.coords.longitude;
+                    setPosition({ latitude: lat, longitude: lng });
+                    setIsLocating(false);
+                },
+                (err) => {
+                    setError("❌ Failed to get location. Please allow location access.");
+                    setLoading(false);
+                }
+            );
+        } else {
+            setLocationError("Location not found, please allow location permissions");
+            setIsLocating(false);
         }
     };
 
@@ -195,12 +204,6 @@ function LocationEvents({onLocationFound, onLocationError }) {
             });
         },
     }); 
-
-    // useEffect(() => {
-    //     if (isUserLocation && mapRef.current) {
-    //         mapRef.current.locate()
-    //     }
-    // }, [isUserLocation, mapRef])
 
     return null;
     
