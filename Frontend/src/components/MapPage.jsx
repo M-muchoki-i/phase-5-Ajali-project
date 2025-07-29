@@ -63,12 +63,6 @@ export default function MapPage() {
         }
      };
 
-    // useEffect(() => {  //this allows us to et the positional coords on component mount
-    //     if (position && mapRef.current) {
-    //         mapRef.current.flyTo(position, 13)
-    //     }
-    // },[position]) //position as a dependancy for the side-effect
-
     return (
         //first fragment is a container for the entire page
         <>
