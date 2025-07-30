@@ -32,10 +32,16 @@ class ReportResource(Resource):
             report = Report(
               user_id =data["user_id"],
               incident=args['incident'],   
+
               details=args.get('details') ,
               latitude=data["latitude"]  ,
               longitude =data["longitude"]
                
+
+
+              details=args.get('details')    
+
+
 
             )
             db.session.add(report)
@@ -61,10 +67,12 @@ class ReportResource(Resource):
             report.details = data['details']  
         if 'incident'   in data:
             report.incident =data['incident']
+
         if 'latitude'   in data:
             report.latitude =data['latitude']
         if 'longitude'   in data:
             report.longitude =data['longitude']
+
 
         try:
             db.session.commit()

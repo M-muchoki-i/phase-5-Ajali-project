@@ -8,9 +8,27 @@ export default function ReportForm() {
   const [searchParams] = useSearchParams();
   const API_BASE_URL = "http://127.0.0.1:5000";
 
+
   const [formData, setFormData] = useState({
     incident: "",
     details: "",
+
+export default function ReportForm({locationData, setLocationData}) {
+  // State for form data
+  const [searchParams] = useSearchParams(); //using url params to pass location when navigating
+   const API_BASE_URL = "http://127.0.0.1:5000";
+  const [formData, setFormData] = useState({
+    incident: "",
+    details: "",
+    latitude:"",
+    longitude:"",
+    media: [],
+  });
+
+  // initialize location data from url params
+
+  const [locationData, setLocationData] = useState({
+
     latitude: searchParams.get("lat") || "",
     longitude: searchParams.get("lng") || "",
     media: [],
@@ -24,7 +42,11 @@ export default function ReportForm() {
 
   const handleTextChange = (e) => {
     const { name, value } = e.target;
+
     setFormData((prev) => ({
+
+    setformData((prev) => ({
+
       ...prev,
       [name]: value,
     }));
@@ -65,6 +87,7 @@ export default function ReportForm() {
   const handleSubmit = async (e) => {
     e.preventDefault();
 
+
     try {
       const dataToSend = {
         incident: formData.incident,
@@ -86,14 +109,51 @@ export default function ReportForm() {
       // setReportId(response.data.id);
 
       // Reset form
+
+    const dataToSend = new FormData();
+    dataToSend.append("incident", formData.incident);
+    dataToSend.append("details", formData.details);
+    // formData.media.forEach((file, index) => {
+    //   dataToSend.append(`media[${index}]`, file);
+    // });
+    dataToSend.append("latitude", formData.latitude);
+    dataToSend.append("longitude", formData.longitude);
+
+    try {
+
+      const response = await axios.post(`${API_BASE_URL}/reports`, dataToSend);
+
+      const response = await axios.post(
+
+        "http://127.0.0.1:5000/reports",
+
+        `${backendURL}/reports`,
+
+        dataToSend
+      );
+
+      console.log(response.data);
+
+      // Reset form state
+
       setFormData({
         incident: "",
         details: "",
         latitude: "",
         longitude: "",
         media: [],
+
         // user_id: "default_user_id", // Reset user ID
       });
+
+      });
+
+      // Reset location state
+      // setLocationData({
+      //   latitude: "",
+      //   longitude: "",
+      // });
+
 
       if (fileInputRef.current) {
         fileInputRef.current.value = "";
@@ -102,6 +162,7 @@ export default function ReportForm() {
       console.error("Error adding incident", error);
     }
   };
+
 
   const getCurrentLocation = () => {
     if (navigator.geolocation) {
@@ -121,6 +182,25 @@ export default function ReportForm() {
       console.error("Geolocation is not supported by this browser.");
     }
   };
+
+  useEffect(() => {
+    const lat = searchParams.get("lat");
+    const lng = searchParams.get("lng");
+
+    if (lat && lng) {
+      setformData({ latitude: lat, longitude: lng });
+    }
+
+
+    if (lat && lng) {
+      setLocationData({ latitude: lat, longitude: lng });
+    }
+
+    if (lat && lng) { setLocationData({ latitude: lat, longitude: lng }); }
+
+
+  }, [searchParams]);
+
 
   return (
     <div>

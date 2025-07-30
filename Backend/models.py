@@ -50,9 +50,13 @@ class Report(db.Model, SerializerMixin):
     user_id = db.Column(db.Integer, db.ForeignKey("users.id"), nullable=False)
     incident = db.Column(db.String, nullable=False)
     details = db.Column(db.Text, nullable=False)
+
+
+
     latitude = db.Column(db.Float, nullable=False, server_default="0")
     longitude = db.Column(db.Float, nullable=False, server_default="0")
    
+
 
     created_at = db.Column(db.TIMESTAMP)
 
