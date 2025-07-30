@@ -30,7 +30,7 @@ export function Login() {
 
         setUser(data.user); // update AuthContext
         setMessage({ type: "success", text: "Login successful!" });
-        navigate("/Home");
+        navigate("/home");
       } else {
         setMessage({ type: "error", text: data.error || "Login failed" });
       }

@@ -18,6 +18,7 @@ export default function ReportForm() {
   });
   
   const [reportId, setReportId] = useState(null); // State for report ID
+  const [submittedReport, setSubmittedReport] = useState(null);
    const fileInputRef = useRef(null);
 
  
@@ -76,14 +77,15 @@ export default function ReportForm() {
 
       const response = await axios.post(`${API_BASE_URL}/reports`, dataToSend);
 
-      // console.log(response.data);
-      //  setSubmittedReport({
-      //    incident: dataToSend.incident,
-      //    details: dataToSend.details,
-      //    latitude: dataToSend.latitude,
-      //    longitude: dataToSend.longitude
-      //  });
-      // setReportId(response.data.id);
+      console.log(response.data);
+       setSubmittedReport({
+         incident: dataToSend.incident,
+         details: dataToSend.details,
+         latitude: dataToSend.latitude,
+         longitude: dataToSend.longitude
+       });
+      setSubmittedReport(response.data);
+      setReportId(response.data.id);
 
       // Reset form
       setFormData({
@@ -229,7 +231,7 @@ export default function ReportForm() {
       {reportId && (
         <UpdateReportStatus
           reportId={reportId}
-          access_token="access_token"
+          access_token={localStorage.getItem("access_token")}
           reportDetails={submittedReport} // Pass the report details if necessary
         />
       )}

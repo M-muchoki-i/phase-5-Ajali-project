@@ -24,8 +24,8 @@ export function UpdateReportStatus({ reportId, access_token, reportDetails }) {
             Authorization: `Bearer ${access_token}`,
           },
           body: JSON.stringify({
-            status: data.status,
-            updated_by: "", // or omit if backend uses JWT user info
+            status: data.status
+           
           }),
         }
       );
