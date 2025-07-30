@@ -51,6 +51,8 @@ class Report(db.Model, SerializerMixin):
     incident = db.Column(db.String, nullable=False)
     details = db.Column(db.Text, nullable=False)
 
+
+
     latitude = db.Column(db.Float, nullable=False, server_default="0")
     longitude = db.Column(db.Float, nullable=False, server_default="0")
    

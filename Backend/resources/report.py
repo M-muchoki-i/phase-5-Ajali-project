@@ -38,7 +38,9 @@ class ReportResource(Resource):
               longitude =data["longitude"]
                
 
+
               details=args.get('details')    
+
 
 
             )
