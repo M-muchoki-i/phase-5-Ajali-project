@@ -1,13 +1,13 @@
 import { useState } from "react";
 import { useAuth } from "../components/AuthContext";
 import { Link, useNavigate } from "react-router-dom";
+import { BASE_URL } from "../../utils";
 
 
 export function Login() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [message, setMessage] = useState(null);
-  const API_BASE_URL = "http://127.0.0.1:5000";
   const { setUser } = useAuth();
   const navigate = useNavigate();
 
@@ -17,13 +17,7 @@ export function Login() {
 
     try {
 
-      const res = await fetch(`${API_BASE_URL}/login`, {
-
-
-      const res = await fetch(`${API_BASE_URL}/login`, {
-
-      const res = await fetch("http://127.0.0.1:5000/login", {
-
+      const res = await fetch(`${BASE_URL}/login`, {
 
         method: "POST",
         headers: { "Content-Type": "application/json" },
