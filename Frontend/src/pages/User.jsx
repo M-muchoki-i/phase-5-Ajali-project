@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { Link } from "react-router-dom";
+import { BASE_URL } from "../../utils";
 
 export function User() {
   const [first_name, setfirst_name] = useState("");
@@ -8,14 +9,14 @@ export function User() {
   const [password, setpassword] = useState("");
   const [phone_number, setphone_number] = useState("");
   const [message, setMessage] = useState(null);
-  const API_BASE_URL = "http://127.0.0.1:5000";
+  
 
   const handleSignup = async (e) => {
     e.preventDefault();
     setMessage(null);
 
     try {
-      const res = await fetch(`${API_BASE_URL}/user`, {
+      const res = await fetch(`${BASE_URL}/user`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({

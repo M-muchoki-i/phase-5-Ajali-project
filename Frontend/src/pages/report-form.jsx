@@ -1,8 +1,8 @@
 import { useState, useRef, useEffect } from "react";
 import axios from "axios";
 import { useSearchParams } from "react-router-dom";
-
-const backendURL = "http://localhost:5000";
+import { BASE_URL } from "../../utils";
+;
 
 export default function ReportForm({locationData, setLocationData}) {
   // State for form data
@@ -68,7 +68,7 @@ export default function ReportForm({locationData, setLocationData}) {
 
     try {
       const response = await axios.post(
-        `${backendURL}/reports`,
+        `${BASE_URL}/reports`,
         dataToSend
       );
       console.log(response.data);

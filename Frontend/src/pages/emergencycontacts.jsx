@@ -1,5 +1,5 @@
-
-import  { useState } from 'react';
+import { useState } from 'react';
+import { BASE_URL } from '../../utils';
 
 const EmergencyContact = () => {
   const [formData, setFormData] = useState({
@@ -36,7 +36,7 @@ const EmergencyContact = () => {
     }
 
     try {
-      const response = await fetch('http://localhost:5000/emergency_contacts', {
+      const response = await fetch(`${BASE_URL}/emergency_contacts`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(formData),
