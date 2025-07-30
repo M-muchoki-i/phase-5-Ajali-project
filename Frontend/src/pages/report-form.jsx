@@ -13,6 +13,12 @@ export default function ReportForm({locationData, setLocationData}) {
     media: [],
   });
 
+  
+  const [reportId, setReportId] = useState(null); // State for report ID
+  const [submittedReport, setSubmittedReport] = useState(null);
+   const fileInputRef = useRef(null);
+
+
   // initialize location data from url params
   // const [locationData, setLocationData] = useState({
   //   latitude: searchParams.get("lat") || "",
@@ -67,6 +73,29 @@ export default function ReportForm({locationData, setLocationData}) {
     dataToSend.append("longitude", locationData.longitude);
 
     try {
+
+      const dataToSend = {
+        incident: formData.incident,
+        details: formData.details,
+        latitude: formData.latitude,
+        longitude: formData.longitude,
+        user_id: formData.user_id,
+      };
+
+      const response = await axios.post(`${API_BASE_URL}/reports`, dataToSend);
+
+      console.log(response.data);
+       setSubmittedReport({
+         incident: dataToSend.incident,
+         details: dataToSend.details,
+         latitude: dataToSend.latitude,
+         longitude: dataToSend.longitude
+       });
+      setSubmittedReport(response.data);
+      setReportId(response.data.id);
+
+      // Reset form
+
       const response = await axios.post(
         `${BASE_URL}/reports`,
         dataToSend
@@ -74,6 +103,7 @@ export default function ReportForm({locationData, setLocationData}) {
       console.log(response.data);
 
       // Reset form state
+
       setFormData({
         incident: "",
         details: "",
@@ -214,6 +244,15 @@ export default function ReportForm({locationData, setLocationData}) {
           </button>
         </form>
       </div>
+
+      {reportId && (
+        <UpdateReportStatus
+          reportId={reportId}
+          access_token={localStorage.getItem("access_token")}
+          reportDetails={submittedReport} // Pass the report details if necessary
+        />
+      )}
+
     </div>
   );
 }

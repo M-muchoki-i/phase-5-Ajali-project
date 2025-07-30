@@ -2,52 +2,72 @@
 from flask_restful import Resource
 from flask import request
 from datetime import datetime
-from flask_jwt_extended import jwt_required, get_jwt_identity
-from models import db, Report, StatusUpdate, User 
+from flask_jwt_extended import jwt_required, get_jwt, get_jwt_identity
+from models import db, Report, StatusUpdate,User
+from sqlalchemy.exc import SQLAlchemyError
 
 class ReportStatusUpdateResource(Resource):
+    @jwt_required(optional=True)
+    def get(self, report_id):
+        claims = get_jwt()
+        role = claims.get("role")
+        if role != "admin":
+            return {"message": "Admin access required"}, 403
+
+        report = Report.query.get(id)
+        if not report:
+            return {"message": "Report not found"}, 404
+
+        latest_status_update = (StatusUpdate.query.filter_by(report_id=report_id).order_by(StatusUpdate.timestamp.desc()).first())
+
+        response = {
+            "id": report.id,
+            "incident": report.incident,
+            "details": report.details,
+            "latitude": report.latitude,
+            "longitude": report.longitude,
+            # "current_status": report.status,
+            "latest_status_update": {
+                "status": latest_status_update.status if latest_status_update else None,
+                "updated_by": latest_status_update.updated_by if latest_status_update else None,
+                "timestamp": latest_status_update.timestamp.isoformat() if latest_status_update else None,
+            } if latest_status_update else None,
+        }
+        return response, 200
 
     @jwt_required()
     def post(self, report_id):
-        # Get current user identity from JWT token
-        current_user_id = get_jwt_identity()
-        user = User.query.get(current_user_id)
+        claims = get_jwt()
+        role = claims.get("role")
+        updated_by = claims.get("sub")  # typically user ID or identity
 
-        # Check if user exists and is admin
-        if not user or not user.is_admin:
-            return {"error": "Admin access required"}, 403
+        if role != "admin":
+            return {"message": "Admin access required"}, 403
 
-        # Parse request data
         data = request.get_json()
         new_status = data.get('status')
-        updated_by = data.get('updated_by')
+        valid_statuses = ['under investigation', 'rejected', 'resolved']
+        if new_status not in valid_statuses:
+            return {"message": f"Invalid status. Must be one of {valid_statuses}"}, 400
 
-        # Validate status
-        if new_status not in ['under investigation', 'rejected', 'resolved']:
-            return {"error": "Invalid status"}, 400
-
-        # Admin username must be provided - you can decide if you want to fetch it from the user instead
-        if not updated_by:
-            return {"error": "updated_by is required"}, 400
-
-        # Validate report exists
-        report = Report.query.get(report_id)
+        report = Report.query.all()
         if not report:
-            return {"error": "Report not found"}, 404
+            return {"message": "Report not found"}, 404
 
         try:
-            # Create new StatusUpdate with the given data
             status_update = StatusUpdate(
                 report_id=report_id,
                 updated_by=updated_by,
                 status=new_status,
                 timestamp=datetime.utcnow()
             )
+            report.status = new_status
+
             db.session.add(status_update)
             db.session.commit()
+
             return {"message": f"Report status updated to '{new_status}'"}, 200
 
         except Exception as e:
-            return {"error": str(e)}, 400
-
-
+            db.session.rollback()
+            return {"message": str(e)}, 400
