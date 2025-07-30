@@ -36,11 +36,26 @@ class ReportResource(Resource):
 
         try:
             report = Report(
+
                 user_id=data["user_id"],
                 incident=args['incident'],
                 details=args.get('details'),
                 latitude=data["latitude"],
                 longitude=data["longitude"]
+
+              user_id =data["user_id"],
+              incident=args['incident'],   
+
+              details=args.get('details') ,
+              latitude=data["latitude"]  ,
+              longitude =data["longitude"]
+               
+
+
+              details=args.get('details')    
+
+
+
             )
             db.session.add(report)
             db.session.commit()
@@ -56,9 +71,24 @@ class ReportResource(Resource):
             return {"message": "Report not found"}, 404
 
         data = request.get_json()
+
         for field in ['user_id', 'details', 'incident', 'latitude', 'longitude']:
             if field in data:
                 setattr(report, field, data[field])
+
+        if 'user_id' in data:
+            report.user_id =data['user_id']
+        if 'details' in data:
+            report.details = data['details']  
+        if 'incident'   in data:
+            report.incident =data['incident']
+
+        if 'latitude'   in data:
+            report.latitude =data['latitude']
+        if 'longitude'   in data:
+            report.longitude =data['longitude']
+
+
 
         try:
             db.session.commit()

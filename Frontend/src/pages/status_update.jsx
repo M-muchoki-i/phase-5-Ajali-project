@@ -11,12 +11,11 @@ export function UpdateReportStatus({ reportId, access_token, reportDetails }) {
   } = useForm();
 
   const statuses = ["under investigation", "rejected", "resolved"];
-   const API_BASE_URL = "http://127.0.0.1:5000";
 
   const onSubmit = async (data) => {
     try {
       const response = await fetch(
-        `${API_BASE_URL}/admin/reports/${reportId}/status`,
+        `${BASE_URL}/admin/reports/${reportId}/status`,
         {
           method: "POST",
           headers: {
