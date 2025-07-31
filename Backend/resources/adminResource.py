@@ -60,8 +60,6 @@ class AdminResource(Resource):
         try:
             old_status = record.status
             record.status = args["status"]
-            # if args.get('admin_comment'):
-            #     record.admin_comment = args['admin_comment'].strip()
 
             record.updated_at = datetime.now(timezone.utc)
             db.session.commit()
