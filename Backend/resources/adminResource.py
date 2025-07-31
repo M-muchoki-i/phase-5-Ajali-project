@@ -114,7 +114,6 @@ class AdminResource(Resource):
 
         try:
             send_email_notification(user.email, subject, body)
-            # if user.phone:
-            #     send_sms_notification(user.phone, f"Record #{record.id} status updated to {new_status}")
+
         except Exception as e:
             current_app.logger.error(f"Failed to send notification: {str(e)}")
