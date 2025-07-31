@@ -1,6 +1,7 @@
 import { useForm } from "react-hook-form";
-import { toast, ToastContainer } from "react-toastify";
-// import "react-toastify/dist/ReactToastify.css";
+import { ToastContainer } from "react-toastify";
+import { StatusUpdate } from "../components/StatusUpdate";""
+// import "react-toastify/dist/ReactToastify.css"; // Import once in App.jsx
 
 export function UpdateReportStatus({ reportId, access_token, reportDetails }) {
   const {
@@ -11,6 +12,7 @@ export function UpdateReportStatus({ reportId, access_token, reportDetails }) {
   } = useForm();
 
   const statuses = ["under investigation", "rejected", "resolved"];
+  const API_BASE_URL = "http://127.0.0.1:5000";
 
   const onSubmit = async (data) => {
     try {
@@ -23,6 +25,8 @@ export function UpdateReportStatus({ reportId, access_token, reportDetails }) {
             Authorization: `Bearer ${access_token}`,
           },
           body: JSON.stringify({
+            status: data.status,
+            updated_by: "", 
             status: data.status
            
           }),
@@ -32,21 +36,23 @@ export function UpdateReportStatus({ reportId, access_token, reportDetails }) {
       const result = await response.json();
 
       if (response.ok) {
-        toast.success(result.message || "Status updated successfully");
+        StatusUpdate.success(
+          result.message || "✅ Status updated successfully"
+        );
         reset();
       } else {
-        toast.error(result.error || "Failed to update status");
+        StatusUpdate.error(result.error || "❌ Failed to update status");
       }
     } catch (error) {
-      toast.error("Network error: " + error.message);
+      StatusUpdate.error("🌐 Network error: " + error.message);
     }
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-gray-950 via-blue-950 to-red-950 font-inter text-white relative overflow-hidden p-4 sm:p-6 lg:p-8">
+    <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-gray-950 via-blue-950 to-red-950 font-inter text-white p-4 sm:p-6 lg:p-8">
       <div className="relative z-10 max-w-md w-full p-8 sm:p-10 bg-white/5 backdrop-blur-xl rounded-2xl border border-white/10 shadow-2xl space-y-6 animate-fade-in">
         <div className="text-center">
-          <h3 className="text-xl font-semibold mb-4 text-black">
+          <h3 className="text-xl font-semibold mb-4 text-white">
             Update Status for Report ID:{" "}
             <span className="font-mono">{reportId}</span>
           </h3>
@@ -54,7 +60,7 @@ export function UpdateReportStatus({ reportId, access_token, reportDetails }) {
 
         <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
           <div>
-            <label className="block text-black font-medium mb-1">
+            <label className="block text-white font-medium mb-1">
               Details:
             </label>
             <input
@@ -65,8 +71,8 @@ export function UpdateReportStatus({ reportId, access_token, reportDetails }) {
             />
           </div>
           <div>
-            <label className="block text-black font-medium mb-1">
-              incident:
+            <label className="block text-white font-medium mb-1">
+              Incident:
             </label>
             <input
               type="text"
@@ -79,7 +85,7 @@ export function UpdateReportStatus({ reportId, access_token, reportDetails }) {
           <div>
             <label
               htmlFor="status"
-              className="block text-black font-medium mb-1"
+              className="block text-white font-medium mb-1"
             >
               Status:
             </label>
@@ -87,12 +93,12 @@ export function UpdateReportStatus({ reportId, access_token, reportDetails }) {
               id="status"
               {...register("status", { required: "Please select a status" })}
               defaultValue=""
-              className={`w-full text-black p-3 border-2 border-gray-200 rounded-full bg-white 
-                          focus:border-red-400 focus:ring-2 focus:ring-red-100 
-                          transition-all appearance-none cursor-pointer
-                          hover:border-red-300 ${
-                            errors.status ? "border-red-500" : "border-gray-300"
-                          }`}
+              className={`w-full text-black p-3 border-2 border-gray-200 rounded-full bg-white
+                focus:border-red-400 focus:ring-2 focus:ring-red-100
+                transition-all appearance-none cursor-pointer
+                hover:border-red-300 ${
+                  errors.status ? "border-red-500" : "border-gray-300"
+                }`}
             >
               <option value="" disabled>
                 -- Select a status --
@@ -118,8 +124,7 @@ export function UpdateReportStatus({ reportId, access_token, reportDetails }) {
           </button>
         </form>
 
-        {/* Container for toast notifications */}
-        <ToastContainer position="top-right" autoClose={3000} />
+        <ToastContainer />
       </div>
     </div>
   );
