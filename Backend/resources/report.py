@@ -1,17 +1,16 @@
-from flask_restful import Resource,reqparse
+from flask_restful import Resource, reqparse
 from models import db, Report
 from flask import request
-from flask_jwt_extended import jwt_required,get_jwt
+from flask_jwt_extended import jwt_required, get_jwt
 from sqlalchemy.exc import SQLAlchemyError
+
 
 class ReportResource(Resource):
     parser = reqparse.RequestParser()
-    parser.add_argument('incident', type=str, required=True, help='incident type is required')
-    parser.add_argument('details', type=str, help='Please provide a detailed message')
-    # parser.add_argument('Location',required=True,  type=float, help='Location not provided')
-
-    # parser.add_argument('Media', type=str, help='Media not attached')
-
+    parser.add_argument(
+        "incident", type=str, required=True, help="incident type is required"
+    )
+    parser.add_argument("details", type=str, help="Please provide a detailed message")
 
     @jwt_required()
     def get(self, id=None):
@@ -21,14 +20,14 @@ class ReportResource(Resource):
             return {"message": "Admin access required"}, 403
 
         if id:
-            report = Report.query.get(id=id)
+            report = Report.query.get(id)
             if report:
                 return report.to_dict(), 200
-            else:
-                return {"message": "Report not found"}, 404
+            return {"message": "Report not found"}, 404
 
         reports = Report.query.all()
         return [r.to_dict() for r in reports], 200
+
     @jwt_required()
     def post(self):
         data = request.get_json()
@@ -36,101 +35,70 @@ class ReportResource(Resource):
 
         try:
             report = Report(
-
                 user_id=data["user_id"],
-                incident=args['incident'],
-                details=args.get('details'),
+                incident=args["incident"],
+                details=args.get("details"),
                 latitude=data["latitude"],
-                longitude=data["longitude"]
-
-              user_id =data["user_id"],
-              incident=args['incident'],   
-
-              details=args.get('details') ,
-              latitude=data["latitude"]  ,
-              longitude =data["longitude"]
-               
-
-
-              details=args.get('details')    
-
-
-
+                longitude=data["longitude"],
             )
             db.session.add(report)
             db.session.commit()
             return report.to_dict(), 201
         except Exception as e:
             db.session.rollback()
-            return {'message': str(e)}, 400
- 
+            return {"message": str(e)}, 400
+
     @jwt_required()
     def patch(self, id=None):
-        report = Report.query.get(id=id)
+        report = Report.query.get(id)
         if not report:
             return {"message": "Report not found"}, 404
 
         data = request.get_json()
-
-        for field in ['user_id', 'details', 'incident', 'latitude', 'longitude']:
+        for field in ["user_id", "details", "incident", "latitude", "longitude"]:
             if field in data:
                 setattr(report, field, data[field])
 
-        if 'user_id' in data:
-            report.user_id =data['user_id']
-        if 'details' in data:
-            report.details = data['details']  
-        if 'incident'   in data:
-            report.incident =data['incident']
-
-        if 'latitude'   in data:
-            report.latitude =data['latitude']
-        if 'longitude'   in data:
-            report.longitude =data['longitude']
-
-
-
         try:
             db.session.commit()
-            return report.to_dict()
+            return report.to_dict(), 200
         except Exception as e:
             db.session.rollback()
             return {"message": str(e)}, 400
 
+    @jwt_required()
     def delete(self, id=None):
-        report = Report.query.get(id=id)
+        report = Report.query.get(id)
         if not report:
             return {"message": "Report not found"}, 404
 
         try:
             db.session.delete(report)
             db.session.commit()
-            return {"message": "Report deleted"}
+            return {"message": "Report deleted"}, 200
         except SQLAlchemyError:
             db.session.rollback()
             return {"message": "Database error"}, 500
 
-        
+
 class MediaResource(Resource):
     def get(self, id=None):
-        report = Report.query.get(id=id)
+        report = Report.query.get(id)
         if report:
             media = report.media_attachment
             return [m.to_dict() for m in media], 200
-        else:
-            return {'message':'Media not found'}, 403
-        
-    def delete(self, id = None):
-        report = Report.query.get(id=id)
-        if report:
-            media = [m.to_dict() for m in report.media_attachment]
-            try:
+        return {"message": "Media not found"}, 404
+
+    def delete(self, id=None):
+        report = Report.query.get(id)
+        if not report:
+            return {"message": "Report not found"}, 404
+
+        try:
+            for media in report.media_attachment:
                 db.session.delete(media)
-                db.session.commit()
-                return {'message':'Media deleted successfully'}, 200
-            except SQLAlchemyError:
-                db.session.rollback()
-                return {'message':'Database error: Media not deleted'}, 500
-
-
-
+            db.session.commit()
+            return {"message": "Media deleted successfully"}, 200
+        except SQLAlchemyError:
+            db.session.rollback()
+            return {"message": "Database error: Media not deleted"}, 500
