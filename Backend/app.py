@@ -1,8 +1,8 @@
 import os
 from flask import Flask
 from flask_migrate import Migrate
-from flask_restful import Api
 from flask_cors import CORS
+from flask_restful import Api
 from datetime import timedelta
 from models import db
 from flask_bcrypt import Bcrypt
@@ -43,15 +43,22 @@ api = Api(app)
 migrate = Migrate(app, db)
 db.init_app(app)
 CORS(app, resources={r"/*": {"origins": "*"}})
+# CORS(app, resources={r"/admin/": {"origins": "http://localhost:5173"}})
+
+
 
 
 
 # Register resource routes
 api.add_resource(UserResources, "/user", "/user/<int:id>")
 api.add_resource(LoginResource, "/login")
-api.add_resource(ReportResource, "/reports", "/reports/<int:report_id>")
+# api.add_resource(ReportResource, "/reports", "/reports/<int:report_id>")
+api.add_resource(ReportResource, '/admin/reports', '/admin/reports/<int:id>')
 api.add_resource(LocationResource, "/locations", "/locations/<int:location_id>")
-api.add_resource(ReportStatusUpdateResource, '/admin/reports/<int:report_id>/status')
+# api.add_resource(ReportResource, "/admin/reports", "/admin/reports/<int:id>")
+api.add_resource(ReportStatusUpdateResource, "/admin/reports/<int:report_id>/status")
+
+# api.add_resource(ReportStatusUpdateResource,"/admin/reports" , "/admin/reports/<int:report_id>/status")
 
 
 if __name__ == "__main__":

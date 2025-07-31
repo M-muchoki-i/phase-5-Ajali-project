@@ -17,7 +17,7 @@ export function UpdateReportStatus({ reportId, access_token, reportDetails }) {
   const onSubmit = async (data) => {
     try {
       const response = await fetch(
-        `${API_BASE_URL}/admin/reports/${reportId}/status`,
+        `${BASE_URL}/admin/reports/${reportId}/status`,
         {
           method: "POST",
           headers: {
@@ -27,6 +27,8 @@ export function UpdateReportStatus({ reportId, access_token, reportDetails }) {
           body: JSON.stringify({
             status: data.status,
             updated_by: "", // optional
+            status: data.status
+           
           }),
         }
       );

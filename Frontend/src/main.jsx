@@ -24,6 +24,7 @@ import EmergencyContact from "./pages/emergencycontacts.jsx";
 import { User } from "./pages/User.jsx";
 import { Login } from "./pages/Login.jsx";
 import ReportForm from "./pages/report-form.jsx";
+import AdminDashboard from "./pages/AdminDashboard.jsx";
 import MainLayout from "./MainLayout.jsx"; // ensures the pages are wrapped  to include the fixed footer and bottom padding.
 
 
@@ -42,10 +43,10 @@ const router = createBrowserRouter([
     element: <Login />,
   },
   {
-    path: "/emergency-contact",
+    path: "/AdminDasboard",
     element: (
       <MainLayout>
-        <EmergencyContact />
+        <AdminDashboard />
       </MainLayout>
     ),
   },
@@ -63,7 +64,11 @@ const router = createBrowserRouter([
   // },
   {
     path: "/UpdateReportStatus",
-    element:   <MainLayout><UpdateReportStatus /></MainLayout> 
+    element: (
+      <MainLayout>
+        <UpdateReportStatus />
+      </MainLayout>
+    ),
   },
   {
     path: "/",
