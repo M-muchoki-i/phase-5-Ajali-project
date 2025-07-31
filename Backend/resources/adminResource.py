@@ -8,6 +8,7 @@ from models.userModel import User
 from models.recordModel import Record
 from datetime import datetime, timezone
 from utils import send_email_notification
+# from utils import send_sms_notification  # Uncomment if implemented
 
 
 def is_admin(user_id):
@@ -18,30 +19,30 @@ def is_admin(user_id):
 class AdminResource(Resource):
     @jwt_required()
     def get(self, record_id=None):
-        user_id = get_jwt_identity()
+        current_user = get_jwt_identity()
 
-        if not is_admin(user_id):
+        if not is_admin(current_user):
             return {"message": "Admin access required"}, 403
 
-        if record_id is not None:
+        if record_id:
             record = Record.query.get(record_id)
             if not record:
                 return {"message": "Record not found"}, 404
-            return self.format_record(record), 200
+            return self.serialize_record(record), 200
 
-        page = request.args.get("page", 1, type=int)
-        per_page = min(request.args.get("per_page", 10, type=int), 100)
+        page = request.args.get("page", default=1, type=int)
+        per_page = min(request.args.get("per_page", default=10, type=int), 100)
+
         records = Record.query.paginate(
             page=page, per_page=per_page, error_out=False
         ).items
-
-        return {"records": [self.format_record(r) for r in records]}, 200
+        return {"records": [self.serialize_record(r) for r in records]}, 200
 
     @jwt_required()
     def patch(self, record_id):
-        user_id = get_jwt_identity()
+        current_user = get_jwt_identity()
 
-        if not is_admin(user_id):
+        if not is_admin(current_user):
             return {"message": "Admin access required"}, 403
 
         record = Record.query.get(record_id)
@@ -50,24 +51,28 @@ class AdminResource(Resource):
 
         parser = reqparse.RequestParser()
         parser.add_argument("status", required=True, help="Status is required")
-        
         args = parser.parse_args()
 
         valid_statuses = ["pending", "under investigation", "rejected", "resolved"]
         if args["status"] not in valid_statuses:
             return {"message": "Invalid status"}, 400
 
-        try:
-            old_status = record.status
-            record.status = args["status"]
+        old_status = record.status
+        new_status = args["status"]
 
+        try:
+            record.status = new_status
             record.updated_at = datetime.now(timezone.utc)
             db.session.commit()
 
-            self.send_notification(record, old_status, args["status"])
+            self.notify_user(record, old_status, new_status)
+
+            current_app.logger.info(
+                f"Admin {current_user} updated record #{record.id} from {old_status} to {new_status}"
+            )
 
             return {
-                "message": f"Status updated from {old_status} to {args['status']}",
+                "message": f"Status updated from {old_status} to {new_status}",
                 "record": {
                     "id": record.id,
                     "title": record.title,
@@ -78,9 +83,38 @@ class AdminResource(Resource):
 
         except Exception as e:
             db.session.rollback()
+            current_app.logger.error(
+                f"Admin {current_user} failed to update record #{record.id}: {str(e)}"
+            )
             return {"message": f"Error updating status: {str(e)}"}, 500
 
-    def format_record(self, record):
+    @jwt_required()
+    def delete(self, record_id):
+        current_user = get_jwt_identity()
+
+        if not is_admin(current_user):
+            return {"message": "Admin access required"}, 403
+
+        record = Record.query.get(record_id)
+        if not record:
+            return {"message": "Record not found"}, 404
+
+        try:
+            db.session.delete(record)
+            db.session.commit()
+
+            current_app.logger.info(f"Admin {current_user} deleted record #{record.id}")
+
+            return {"message": f"Record #{record_id} deleted successfully"}, 200
+
+        except Exception as e:
+            db.session.rollback()
+            current_app.logger.error(
+                f"Admin {current_user} failed to delete record #{record.id}: {str(e)}"
+            )
+            return {"message": f"Error deleting record: {str(e)}"}, 500
+
+    def serialize_record(self, record):
         return {
             "id": record.id,
             "type": record.type,
@@ -95,7 +129,7 @@ class AdminResource(Resource):
             "user_id": record.user_id,
         }
 
-    def send_notification(self, record, old_status, new_status):
+    def notify_user(self, record, old_status, new_status):
         if old_status == new_status:
             return
 
@@ -103,17 +137,21 @@ class AdminResource(Resource):
         if not user or not user.email:
             return
 
-        subject = f"Status Update for Record #{record.id}"
+        subject = f"Update on Your Emergency Report #{record.id}"
         body = f"""
-        Hello {user.username},
+        Hi {user.username},
 
-        The status of your record "{record.title}" has been updated:
-         - Old Status: {old_status}
-         - New Status: {new_status}
+        Your report titled "{record.title}" has a status change.
+
+        Old Status: {old_status}
+        New Status: {new_status}
+
+        Please check your dashboard for more details.
         """
 
         try:
             send_email_notification(user.email, subject, body)
 
+            
         except Exception as e:
-            current_app.logger.error(f"Failed to send notification: {str(e)}")
+            current_app.logger.error(f"Failed to notify user #{user.id}: {str(e)}")
