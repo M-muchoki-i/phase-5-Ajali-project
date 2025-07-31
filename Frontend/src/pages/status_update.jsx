@@ -1,6 +1,6 @@
 import { useForm } from "react-hook-form";
 import { ToastContainer } from "react-toastify";
-import { StatusUpdate } from "../components/StatusUpdate"; // import the helper
+import { StatusUpdate } from "../components/StatusUpdate";""
 // import "react-toastify/dist/ReactToastify.css"; // Import once in App.jsx
 
 export function UpdateReportStatus({ reportId, access_token, reportDetails }) {
@@ -26,7 +26,7 @@ export function UpdateReportStatus({ reportId, access_token, reportDetails }) {
           },
           body: JSON.stringify({
             status: data.status,
-            updated_by: "", // optional
+            updated_by: "", 
             status: data.status
            
           }),
@@ -124,7 +124,6 @@ export function UpdateReportStatus({ reportId, access_token, reportDetails }) {
           </button>
         </form>
 
-        {/* Only include this once if not in App.jsx */}
         <ToastContainer />
       </div>
     </div>
