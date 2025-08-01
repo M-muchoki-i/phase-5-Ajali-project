@@ -26,6 +26,8 @@ import { Login } from "./pages/Login.jsx";
 import ReportForm from "./pages/report-form.jsx";
 import AdminDashboard from "./pages/AdminDashboard.jsx";
 import MainLayout from "./MainLayout.jsx"; // ensures the pages are wrapped  to include the fixed footer and bottom padding.
+import UserDashboard from "./pages/UserDash.jsx";
+import ReportDetailPage from "./pages/details.jsx";
 
 
 
@@ -43,7 +45,7 @@ const router = createBrowserRouter([
     element: <Login />,
   },
   {
-    path: "/AdminDasboard",
+    path: "/AdminDashboard",
     element: (
       <MainLayout>
         <AdminDashboard />
@@ -111,6 +113,14 @@ const router = createBrowserRouter([
       </MainLayout>
     ),
   },
+  {
+    path: "/user-dashboard",
+    element: <UserDashboard />
+  },
+  {
+    path: "/details-page",
+    element: <ReportDetailPage/>
+  }
 ]);
 
 createRoot(document.getElementById("root")).render(
