@@ -26,7 +26,7 @@ export default function ReportForm({locationData, setLocationData}) {
   // });
 
   // Ref for file input
-  const fileInputRef = useRef(null);
+  //const fileInputRef = useRef(null);
 
   // Handle location changes
   const handleLocationChange = (e) => {
@@ -96,10 +96,10 @@ export default function ReportForm({locationData, setLocationData}) {
 
       // Reset form
 
-      const response = await axios.post(
-        `${BASE_URL}/reports`,
-        dataToSend
-      );
+      // const response = await axios.post(
+      //   `${BASE_URL}/reports`,
+      //   dataToSend
+      // );
       console.log(response.data);
 
       // Reset form state
