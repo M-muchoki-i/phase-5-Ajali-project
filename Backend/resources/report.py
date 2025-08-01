@@ -31,18 +31,10 @@ class ReportResource(Resource):
         try:
             report = Report(
               user_id =data["user_id"],
-              incident=args['incident'],   
-
+              incident=args['incident'],
               details=args.get('details') ,
               latitude=data["latitude"]  ,
               longitude =data["longitude"]
-               
-
-
-              details=args.get('details')    
-
-
-
             )
             db.session.add(report)
             db.session.commit()
