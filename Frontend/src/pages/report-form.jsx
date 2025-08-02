@@ -2,33 +2,19 @@ import { useState, useRef, useEffect } from "react";
 import axios from "axios";
 import { useSearchParams } from "react-router-dom";
 import { BASE_URL } from "../../utils";
-;
 
-export default function ReportForm({locationData, setLocationData}) {
-  // State for form data
-  const [searchParams] = useSearchParams(); //using url params to pass location when navigating
+export default function ReportForm({ locationData, setLocationData }) {
+  const [searchParams] = useSearchParams();
   const [formData, setFormData] = useState({
     incident: "",
     details: "",
     media: [],
   });
-
-  
-  const [reportId, setReportId] = useState(null); // State for report ID
+  const [reportId, setReportId] = useState(null);
   const [submittedReport, setSubmittedReport] = useState(null);
-   const fileInputRef = useRef(null);
+  const fileInputRef = useRef(null);
+  const [isDragging, setIsDragging] = useState(false);
 
-
-  // initialize location data from url params
-  // const [locationData, setLocationData] = useState({
-  //   latitude: searchParams.get("lat") || "",
-  //   longitude: searchParams.get("lng") || "",
-  // });
-
-  // Ref for file input
-  //const fileInputRef = useRef(null);
-
-  // Handle location changes
   const handleLocationChange = (e) => {
     const { name, value } = e.target;
     setLocationData((prev) => ({
@@ -37,7 +23,6 @@ export default function ReportForm({locationData, setLocationData}) {
     }));
   };
 
-  // Handle text field changes
   const handleTextChange = (e) => {
     const { name, value } = e.target;
     setFormData((prev) => ({
@@ -46,9 +31,12 @@ export default function ReportForm({locationData, setLocationData}) {
     }));
   };
 
-  // Handle media uploads
   const handleMediaChange = (e) => {
     const files = Array.from(e.target.files);
+    handleFiles(files);
+  };
+
+  const handleFiles = (files) => {
     const validFiles = files.filter(
       (file) => file.type.startsWith("image/") || file.type.startsWith("video/")
     );
@@ -59,64 +47,50 @@ export default function ReportForm({locationData, setLocationData}) {
     }));
   };
 
-  // Submit form data
+  const handleDragOver = (e) => {
+    e.preventDefault();
+    setIsDragging(true);
+  };
+
+  const handleDragLeave = () => {
+    setIsDragging(false);
+  };
+
+  const handleDrop = (e) => {
+    e.preventDefault();
+    setIsDragging(false);
+    const files = Array.from(e.dataTransfer.files);
+    handleFiles(files);
+  };
+
   const handleSubmit = async (e) => {
     e.preventDefault();
 
-    const dataToSend = new FormData();
-    dataToSend.append("incident", formData.incident);
-    dataToSend.append("details", formData.details);
-    formData.media.forEach((file, index) => {
-      dataToSend.append(`media[${index}]`, file);
-    });
-    dataToSend.append("latitude", locationData.latitude);
-    dataToSend.append("longitude", locationData.longitude);
-
     try {
-
       const dataToSend = {
         incident: formData.incident,
         details: formData.details,
-        latitude: formData.latitude,
-        longitude: formData.longitude,
-        user_id: formData.user_id,
+        latitude: locationData.latitude,
+        longitude: locationData.longitude,
+        media: formData.media,
       };
 
-      const response = await axios.post(`${API_BASE_URL}/reports`, dataToSend);
-
-      console.log(response.data);
-       setSubmittedReport({
-         incident: dataToSend.incident,
-         details: dataToSend.details,
-         latitude: dataToSend.latitude,
-         longitude: dataToSend.longitude
-       });
+      const response = await axios.post(`${BASE_URL}/reports`, dataToSend);
       setSubmittedReport(response.data);
       setReportId(response.data.id);
 
       // Reset form
-
-      // const response = await axios.post(
-      //   `${BASE_URL}/reports`,
-      //   dataToSend
-      // );
-      console.log(response.data);
-
-      // Reset form state
-
       setFormData({
         incident: "",
         details: "",
         media: [],
       });
 
-      // Reset location state
       setLocationData({
         latitude: "",
         longitude: "",
       });
 
-      // Clear file input
       if (fileInputRef.current) {
         fileInputRef.current.value = "";
       }
@@ -128,117 +102,185 @@ export default function ReportForm({locationData, setLocationData}) {
   useEffect(() => {
     const lat = searchParams.get("lat");
     const lng = searchParams.get("lng");
-    if (lat && lng) { setLocationData({ latitude: lat, longitude: lng }); }
+    if (lat && lng) {
+      setLocationData({ latitude: lat, longitude: lng });
+    }
   }, [searchParams]);
 
   return (
-    <div>
-      <div className="max-w-md mx-auto p-6 bg-red-50/60 rounded-2xl border border-red-100 shadow-lg">
-        <h2 className="text-3xl font-bold text-red-800 mb-6 ml-12">
-          Report an emergency
-        </h2>
-        <form onSubmit={handleSubmit}>
-          <h3 className="text-xl font-bold text-red-700 mb-1">Incident</h3>
-          <select
-            name="incident"
-            value={formData.incident}
-            onChange={handleTextChange}
-            className="w-full text-black p-3 border-2 border-gray-200 rounded-full bg-white 
-                        focus:border-red-400 focus:ring-2 focus:ring-red-100 
-                        transition-all appearance-none cursor-pointer
-                        hover:border-red-300"
+    <div className="max-w-md mx-auto">
+      <div className="bg-white/5 backdrop-blur-xl rounded-2xl border border-white/10 shadow-2xl p-6">
+        <div className="flex items-center mb-6">
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            className="h-8 w-8 text-red-400 mr-2"
+            fill="none"
+            viewBox="0 0 24 24"
+            stroke="currentColor"
           >
-            <option value="">Select an incident</option>
-            <option value="Fire">🔥 Fire</option>
-            <option value="Traffic accident">🚦 Traffic</option>
-            <option value="Infrastructure accident">🏗️ Infrastructure</option>
-            <option value="Workplace">🏢 Workplace</option>
-          </select>
+            <path
+              strokeLinecap="round"
+              strokeLinejoin="round"
+              strokeWidth={2}
+              d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"
+            />
+          </svg>
+          <h2 className="text-2xl font-bold text-blue-300">Report an Emergency</h2>
+        </div>
 
-          <h3 className="text-xl font-bold text-red-700 mb-1 mt-4">Details</h3>
-          <input
-            type="text"
-            placeholder="e.g. Accident on 42nd Avenue involving two vehicles, Fire at Mjengo Apartments etc."
-            name="details"
-            value={formData.details}
-            onChange={handleTextChange}
-            required
-            className="w-full p-3 border text-black border-gray-300 rounded-full bg-white 
-                        focus:border-red-400 focus:ring-2 focus:ring-red-100 
-                        transition-all placeholder-gray-400"
-          />
-
-          <h4 className="text-xl font-bold text-red-700 mb-1 mt-4">Location</h4>
-          <div className="flex flex-row w-full items-center">
-            <div
-              className="flex flex-1 text-black rounded-full border-2 border-gray-300 overflow-hidden
-                        hover:border-red-300 transition-colors bg-gray-50"
+        <form onSubmit={handleSubmit} className="space-y-4">
+          <div>
+            <label htmlFor="incident" className="block text-sm font-medium text-blue-300 mb-2">
+              Incident Type
+            </label>
+            <select
+              id="incident"
+              name="incident"
+              value={formData.incident}
+              onChange={handleTextChange}
+              required
+              className="w-full bg-gray-800/50 border border-gray-700 text-white rounded-lg px-4 py-3 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent appearance-none cursor-pointer"
             >
-              <input
-                type="text"
-                name="longitude"
-                className="flex-1 min-w-0 p-4 text-center focus:outline-none border-none bg-transparent"
-                placeholder="Longitude"
-                value={locationData?.longitude || ""}
-                onChange={handleLocationChange}
-              />
-              <div className="border-l border-gray-300 h-8 self-center"></div>
-              <input
-                type="text"
-                name="latitude"
-                className="flex-1 min-w-0 p-4 text-center focus:outline-none border-none bg-transparent"
-                placeholder="Latitude"
-                value={locationData?.latitude || ""}
-                onChange={handleLocationChange}
-              />
-            </div>
-            <div className="w-4"></div>
-            {/* <button
-              type="button"
-              className="shrink-0 py-3 px-6 bg-red-500 text-white font-medium rounded-full
-                            hover:bg-red-600 focus:outline-none focus:ring-2 focus:ring-red-500 
-                            focus:ring-offset-2 shadow-sm transition-all"
-            >
-              Get location
-            </button> */}
+              <option value="">Select an incident</option>
+              <option value="Fire">🔥 Fire</option>
+              <option value="Traffic accident">🚦 Traffic Accident</option>
+              <option value="Infrastructure accident">🏗️ Infrastructure</option>
+              <option value="Workplace">🏢 Workplace</option>
+            </select>
           </div>
 
-          <h3 className="text-xl mt-4 font-bold text-red-700 mb-2">
-            Attach image
-          </h3>
-          <input
-            type="file"
-            name="media"
-            accept="image/*,video/*"
-            multiple
-            onChange={handleMediaChange}
-            ref={fileInputRef}
-            className="border-2 border-dashed border-gray-300 rounded-lg p-4 text-center text-black
-                        hover:border-red-300 transition-colors bg-gray-50 w-full"
-          />
+          <div>
+            <label htmlFor="details" className="block text-sm font-medium text-blue-300 mb-2">
+              Details
+            </label>
+            <textarea
+              id="details"
+              placeholder="e.g. Accident on 42nd Avenue involving two vehicles, Fire at Mjengo Apartments etc."
+              name="details"
+              value={formData.details}
+              onChange={handleTextChange}
+              required
+              rows={3}
+              className="w-full bg-gray-800/50 border border-gray-700 text-white rounded-lg px-4 py-3 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent placeholder-gray-400"
+            />
+          </div>
+
+          <div>
+            <label className="block text-sm font-medium text-blue-300 mb-2">
+              Location Coordinates
+            </label>
+            <div className="grid grid-cols-2 gap-2">
+              <div>
+                <input
+                  type="text"
+                  name="longitude"
+                  className="w-full bg-gray-800/50 border border-gray-700 text-white rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent placeholder-gray-400"
+                  placeholder="Longitude"
+                  value={locationData?.longitude || ""}
+                  onChange={handleLocationChange}
+                />
+              </div>
+              <div>
+                <input
+                  type="text"
+                  name="latitude"
+                  className="w-full bg-gray-800/50 border border-gray-700 text-white rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent placeholder-gray-400"
+                  placeholder="Latitude"
+                  value={locationData?.latitude || ""}
+                  onChange={handleLocationChange}
+                />
+              </div>
+            </div>
+          </div>
+
+          <div>
+            <label className="block text-sm font-medium text-blue-300 mb-2">
+              Attach Media (Photos/Videos)
+            </label>
+            <div
+              className={`border-2 border-dashed ${isDragging ? 'border-blue-400 bg-blue-500/10' : 'border-white/20'} rounded-xl p-4 text-center transition-all cursor-pointer`}
+              onDragOver={handleDragOver}
+              onDragLeave={handleDragLeave}
+              onDrop={handleDrop}
+              onClick={() => fileInputRef.current.click()}
+            >
+              <input
+                type="file"
+                name="media"
+                accept="image/*,video/*"
+                multiple
+                onChange={handleMediaChange}
+                ref={fileInputRef}
+                className="hidden"
+              />
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                className="h-10 w-10 mx-auto text-blue-300 mb-2"
+                fill="none"
+                viewBox="0 0 24 24"
+                stroke="currentColor"
+              >
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  strokeWidth={1.5}
+                  d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"
+                />
+              </svg>
+              <p className="text-blue-300 text-sm font-medium mb-1">
+                {isDragging ? 'Drop files here' : 'Click to upload or drag and drop'}
+              </p>
+              <p className="text-gray-400 text-xs">
+                PNG, JPG, GIF up to 10MB
+              </p>
+            </div>
+          </div>
 
           {formData.media.length > 0 && (
-            <div className="mt-4">
-              <h3 className="text-xl font-bold text-red-700 mb-1">
-                Selected Media:
+            <div className="bg-white/5 rounded-lg p-3 border border-white/10">
+              <h3 className="text-xs font-medium text-blue-300 mb-2 uppercase tracking-wider">
+                Selected Files ({formData.media.length})
               </h3>
-              <div className="grid grid-cols-2 sm:grid-cols-2 gap-4 p-4 bg-gray-50 rounded-lg shadow-md">
-                <ul>
-                  {formData.media.map((file, index) => (
-                    <li key={index}>
-                      {file.name} ({Math.round(file.size / 1024)} KB)
-                    </li>
-                  ))}
-                </ul>
-              </div>
+              <ul className="space-y-1 max-h-32 overflow-y-auto text-xs">
+                {formData.media.map((file, index) => (
+                  <li key={index} className="flex items-center text-gray-300">
+                    <svg
+                      xmlns="http://www.w3.org/2000/svg"
+                      className="h-3 w-3 mr-1 text-blue-300 flex-shrink-0"
+                      fill="none"
+                      viewBox="0 0 24 24"
+                      stroke="currentColor"
+                    >
+                      <path
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                        strokeWidth={2}
+                        d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12"
+                      />
+                    </svg>
+                    <span className="truncate flex-1">{file.name}</span>
+                    <span className="text-gray-400 ml-2">({Math.round(file.size / 1024)}KB)</span>
+                    <button
+                      type="button"
+                      onClick={() => {
+                        setFormData(prev => ({
+                          ...prev,
+                          media: prev.media.filter((_, i) => i !== index)
+                        }));
+                      }}
+                      className="ml-2 text-red-400 hover:text-red-300 text-xs"
+                    >
+                      ×
+                    </button>
+                  </li>
+                ))}
+              </ul>
             </div>
           )}
 
           <button
-            className="w-full mt-4 py-3 px-4 bg-red-500 text-white font-medium rounded-full
-                        hover:bg-red-600 focus:outline-none focus:ring-2 focus:ring-red-500 
-                        focus:ring-offset-2 shadow-sm transition-all"
             type="submit"
+            className="w-full bg-blue-600 hover:bg-blue-500 text-white font-medium py-2 px-4 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 focus:ring-offset-gray-800 transition-colors text-sm"
           >
             Submit Report
           </button>
@@ -249,10 +291,9 @@ export default function ReportForm({locationData, setLocationData}) {
         <UpdateReportStatus
           reportId={reportId}
           access_token={localStorage.getItem("access_token")}
-          reportDetails={submittedReport} // Pass the report details if necessary
+          reportDetails={submittedReport}
         />
       )}
-
     </div>
   );
 }

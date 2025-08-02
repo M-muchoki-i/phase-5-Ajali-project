@@ -4,7 +4,7 @@ import Footer from "./pages/Footer";
 
 export default function MainLayout({ children }) {
   return (
-    <div className="pb-28">
+    <div className="pb-0">
       <NavBar />
       {children}
 
