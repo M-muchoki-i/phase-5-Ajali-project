@@ -2,8 +2,7 @@ import { useState, useEffect } from "react";
 import axios from "axios";
 import { toast, ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
-
-const API_BASE_URL = "http://127.0.0.1:5000";
+import { BASE_URL } from '../../utils';
 
 export default function AdminDashboard() {
   const [reports, setReports] = useState([]);
@@ -15,7 +14,7 @@ export default function AdminDashboard() {
   // Fetch reports
   useEffect(() => {
     setLoading(true);
-    fetch(`${API_BASE_URL}/admin/reports`, {
+    fetch(`${BASE_URL}/admin/reports`, {
       method: "GET",
     })
       .then((response) => {
@@ -40,7 +39,7 @@ export default function AdminDashboard() {
 
     try {
       await axios.patch(
-        `${API_BASE_URL}/admin/reports/${selectedReportId}/status`,
+        `${BASE_URL}/admin/reports/${selectedReportId}/status`,
         { status: newStatus }
       );
 
