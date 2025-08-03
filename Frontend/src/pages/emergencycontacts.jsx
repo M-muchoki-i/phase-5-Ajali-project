@@ -58,7 +58,7 @@ export default function EmergencyContactForm() {
     <div className="min-h-screen bg-gradient-to-br from-gray-950 via-blue-950 to-red-950 p-4 md:p-8">
       <div className="max-w-7xl mx-auto grid grid-cols-1 lg:grid-cols-3 gap-8">
         {/* Form Section - Left Side */}
-        <div className="lg:col-span-2 bg-white/5 backdrop-blur-xl rounded-2xl border border-white/10 shadow-2xl p-6">
+        <div className="bg-white/5 backdrop-blur-xl rounded-2xl border border-white/10 shadow-2xl p-6">
           <h2 className="text-2xl font-bold text-blue-300 mb-6">Emergency Contact Form</h2>
 
           {error && (
@@ -136,7 +136,7 @@ export default function EmergencyContactForm() {
 
             <button
               type="submit"
-              className="w-full bg-blue-700 hover:bg-blue-600 text-white py-2 px-4 rounded-lg transition-colors mt-6"
+              className="w-full bg-blue-700 hover:bg-red-600 text-white py-2 px-4 rounded-lg transition-colors mt-6"
             >
               Submit Contact
             </button>
@@ -144,7 +144,7 @@ export default function EmergencyContactForm() {
         </div>
 
         {/* Contacts Panel - Right Side */}
-        <div className="bg-white/5 backdrop-blur-xl rounded-2xl border border-white/10 shadow-2xl p-6">
+        <div className="lg:col-span-2 bg-white/5 backdrop-blur-xl rounded-2xl border border-white/10 shadow-2xl p-6">
           <h2 className="text-2xl font-bold text-blue-300 mb-6">Your Emergency Contacts</h2>
 
           {contacts.length === 0 ? (
@@ -155,7 +155,7 @@ export default function EmergencyContactForm() {
               <p className="text-gray-400">No emergency contacts saved yet</p>
             </div>
           ) : (
-            <div className="grid grid-cols-1 gap-4">
+            <div className="grid grid-cols-3 gap-4">
               {contacts.map(contact => (
                 <div key={contact.id} className="bg-gray-800/50 border border-gray-700 rounded-xl p-4 hover:border-blue-500/50 transition-colors">
                   <div className="flex justify-between items-start mb-2">
