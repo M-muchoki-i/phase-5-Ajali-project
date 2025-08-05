@@ -8,10 +8,11 @@ export default function ReportForm({ locationData, setLocationData }) {
   const [formData, setFormData] = useState({
     incident: "",
     details: "",
-    media: [],
   });
+  const [mediaFiles, setMediaFiles] = useState([]);
   const [reportId, setReportId] = useState(null);
   const [submittedReport, setSubmittedReport] = useState(null);
+  const [isSubmitting, setIsSubmitting] = useState(false);
   const fileInputRef = useRef(null);
   const [isDragging, setIsDragging] = useState(false);
 
@@ -65,27 +66,56 @@ export default function ReportForm({ locationData, setLocationData }) {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    setIsSubmitting(true);
 
     try {
-      const dataToSend = {
+      //get userid from where it is stored in the app
+      const user_id = localStorage.getItem('user_id');
+
+      // we need to create the report with basic information
+      const reportData = {
+        user_id: user_id,
         incident: formData.incident,
         details: formData.details,
         latitude: locationData.latitude,
         longitude: locationData.longitude,
-        media: formData.media,
       };
 
-      const response = await axios.post(`${BASE_URL}/reports`, dataToSend);
-      setSubmittedReport(response.data);
-      setReportId(response.data.id);
+      //create report using axios
+      const reportResponse = await axios.post(`${BASE_URL}/reports`, reportData,
+        {
+          headers: {
+            'Content-Type': 'application/json',
+            //aut will be added here during testing
+          }
+        }
+      );
+
+      const report = reportResponse.data;
+
+      // const response = await fetch(`${BASE_URL}/reports`, {
+      //   method: 'POST',
+      //   headers: {
+      //     'Content-Type': 'application/json',
+      //   },
+      //   body: JSON.stringify(dataToSend)
+      // });
+
+      // const data = await response.json();
+
+      // // Check if the request was successful
+      // if (!response.ok) {
+      //   throw new Error(`HTTP error! status: ${response.status}`);
+      // }
+      setSubmittedReport(report);
+      setReportId(report.id);
 
       // Reset form
       setFormData({
         incident: "",
         details: "",
-        media: [],
       });
-
+      setMediaFiles([]);
       setLocationData({
         latitude: "",
         longitude: "",
@@ -96,6 +126,8 @@ export default function ReportForm({ locationData, setLocationData }) {
       }
     } catch (error) {
       console.error("Error adding incident", error);
+    } finally {
+      setIsSubmitting(false);
     }
   };
 
@@ -236,13 +268,13 @@ export default function ReportForm({ locationData, setLocationData }) {
             </div>
           </div>
 
-          {formData.media.length > 0 && (
+          {mediaFiles.length > 0 && (
             <div className="bg-white/5 rounded-lg p-3 border border-white/10">
               <h3 className="text-xs font-medium text-blue-300 mb-2 uppercase tracking-wider">
-                Selected Files ({formData.media.length})
+                Selected Files ({mediaFiles.length})
               </h3>
               <ul className="space-y-1 max-h-32 overflow-y-auto text-xs">
-                {formData.media.map((file, index) => (
+                {mediaFiles.map((file, index) => (
                   <li key={index} className="flex items-center text-gray-300">
                     <svg
                       xmlns="http://www.w3.org/2000/svg"
@@ -263,10 +295,7 @@ export default function ReportForm({ locationData, setLocationData }) {
                     <button
                       type="button"
                       onClick={() => {
-                        setFormData(prev => ({
-                          ...prev,
-                          media: prev.media.filter((_, i) => i !== index)
-                        }));
+                        setMediaFiles(prev => prev.filter((_, i) => i !== index));
                       }}
                       className="ml-2 text-red-400 hover:text-red-300 text-xs"
                     >
@@ -280,9 +309,10 @@ export default function ReportForm({ locationData, setLocationData }) {
 
           <button
             type="submit"
+            disabled={isSubmitting}
             className="w-full bg-blue-600 hover:bg-blue-500 text-white font-medium py-2 px-4 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 focus:ring-offset-gray-800 transition-colors text-sm"
           >
-            Submit Report
+            {isSubmitting ? 'Submitting...' : 'Submit Report'}
           </button>
         </form>
       </div>
