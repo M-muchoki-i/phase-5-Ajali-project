@@ -42,10 +42,7 @@ export default function ReportForm({ locationData, setLocationData }) {
       (file) => file.type.startsWith("image/") || file.type.startsWith("video/")
     );
 
-    setFormData((prev) => ({
-      ...prev,
-      media: [...prev.media, ...validFiles],
-    }));
+    setMediaFiles((prev)=>[...prev, ...validFiles]); // Add new files to the existing list
   };
 
   const handleDragOver = (e) => {
@@ -69,63 +66,78 @@ export default function ReportForm({ locationData, setLocationData }) {
     setIsSubmitting(true);
 
     try {
-      //get userid from where it is stored in the app
       const user_id = localStorage.getItem('user_id');
+      
+      if (!user_id) throw new Error("User ID not found");
 
-      // we need to create the report with basic information
-      const reportData = {
+      // Debug: Log what we're sending
+      console.log("Creating report with:", {
+        user_id,
+        ...formData,
+        ...locationData
+      });
+
+      // Step 1: Create report
+      const reportResponse = await axios.post(`${BASE_URL}/reports`, {
         user_id: user_id,
         incident: formData.incident,
         details: formData.details,
         latitude: locationData.latitude,
         longitude: locationData.longitude,
-      };
-
-      //create report using axios
-      const reportResponse = await axios.post(`${BASE_URL}/reports`, reportData,
-        {
-          headers: {
-            'Content-Type': 'application/json',
-            //aut will be added here during testing
-          }
+      }, {
+        headers: {
+          'Content-Type': 'application/json',
+          // Add auth if needed: 'Authorization': `Bearer ${token}`
         }
-      );
+      });
 
       const report = reportResponse.data;
+      console.log("Report created:", report);
 
-      // const response = await fetch(`${BASE_URL}/reports`, {
-      //   method: 'POST',
-      //   headers: {
-      //     'Content-Type': 'application/json',
-      //   },
-      //   body: JSON.stringify(dataToSend)
-      // });
+      // Step 2: Handle media uploads
+      if (mediaFiles.length > 0) {
+        console.log(`Preparing to upload ${mediaFiles.length} files`);
 
-      // const data = await response.json();
+        const uploadFormData = new FormData();
+        mediaFiles.forEach((file) => {
+          uploadFormData.append('media', file);
+          console.log("Added file:", file.name);
+        });
 
-      // // Check if the request was successful
-      // if (!response.ok) {
-      //   throw new Error(`HTTP error! status: ${response.status}`);
-      // }
+        // Debug: Show FormData contents
+        for (let [key, value] of uploadFormData.entries()) {
+          console.log(key, value);
+        }
+
+        const uploadResponse = await axios.post(
+          `${BASE_URL}/reports/${report.id}/media`,
+          uploadFormData,
+          {
+            headers: {
+              'Content-Type': 'multipart/form-data',
+              // Add auth if needed
+            }
+          }
+        );
+        console.log("Upload response:", uploadResponse.data);
+      }
+
+      // Reset form on success
+      setFormData({ incident: "", details: "" });
+      setMediaFiles([]);
+      setLocationData({ latitude: "", longitude: "" });
+      if (fileInputRef.current) fileInputRef.current.value = "";
+
       setSubmittedReport(report);
       setReportId(report.id);
 
-      // Reset form
-      setFormData({
-        incident: "",
-        details: "",
-      });
-      setMediaFiles([]);
-      setLocationData({
-        latitude: "",
-        longitude: "",
-      });
-
-      if (fileInputRef.current) {
-        fileInputRef.current.value = "";
-      }
     } catch (error) {
-      console.error("Error adding incident", error);
+      console.error("Submission error:", {
+        message: error.message,
+        response: error.response?.data,
+        config: error.config
+      });
+      // Add user feedback here (e.g., toast notification)
     } finally {
       setIsSubmitting(false);
     }
