@@ -15,6 +15,8 @@ export default function ReportForm({ locationData, setLocationData }) {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const fileInputRef = useRef(null);
   const [isDragging, setIsDragging] = useState(false);
+  const user_id = localStorage.getItem('user_id');
+  const access_token = localStorage.getItem('access_token');
 
   const handleLocationChange = (e) => {
     const { name, value } = e.target;
@@ -66,9 +68,9 @@ export default function ReportForm({ locationData, setLocationData }) {
     setIsSubmitting(true);
 
     try {
-      const user_id = localStorage.getItem('user_id');
+      //const user_id = localStorage.getItem('user_id');
       
-      if (!user_id) throw new Error("User ID not found");
+      if (!user_id || !access_token) throw new Error('Please log in to submit a report.');
 
       // Debug: Log what we're sending
       console.log("Creating report with:", {
@@ -87,7 +89,7 @@ export default function ReportForm({ locationData, setLocationData }) {
       }, {
         headers: {
           'Content-Type': 'application/json',
-          // Add auth if needed: 'Authorization': `Bearer ${token}`
+           Authorization: `Bearer ${access_token}`,
         }
       });
 
@@ -115,7 +117,7 @@ export default function ReportForm({ locationData, setLocationData }) {
           {
             headers: {
               'Content-Type': 'multipart/form-data',
-              // Add auth if needed
+              Authorization: `Bearer ${access_token}`,
             }
           }
         );
@@ -137,7 +139,7 @@ export default function ReportForm({ locationData, setLocationData }) {
         response: error.response?.data,
         config: error.config
       });
-      // Add user feedback here (e.g., toast notification)
+      // User feedback here (e.g., toast notification)
     } finally {
       setIsSubmitting(false);
     }
