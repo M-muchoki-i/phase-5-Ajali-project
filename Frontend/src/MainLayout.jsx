@@ -1,5 +1,5 @@
 // src/layouts/MainLayout.jsx
-import NavBar from "./pages/NavBar";
+import NavBar from "./pages/improvednav";
 import Footer from "./pages/Footer";
 
 export default function MainLayout({ children }) {
