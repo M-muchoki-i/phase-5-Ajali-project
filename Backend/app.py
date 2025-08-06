@@ -24,7 +24,7 @@ app = Flask(__name__)
 
 
 # configuring our flask app through the config object
-app.config["SQLALCHEMY_DATABASE_URI"] = "sqlite:///ajali.db"
+app.config["SQLALCHEMY_DATABASE_URI"] = os.environ.get("SUPABASE_URL")
 app.config["SQLALCHEMY_ECHO"] = True
 app.config["SQLALCHEMY_TRACK_MODIFICATIONS"] = False  # optional but recommended
 # access token
